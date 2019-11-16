@@ -14,18 +14,30 @@ def carregar_matriz():
 
     for linha in range(planilha.nrows):
         matriz.append([])
-        for col in range(planilha.ncols):
+        for col in range(0, planilha.ncols -1):
             matriz[linha].append(planilha.cell_value(linha, col))
 
     return matriz
 
 
+def carregar_vetorb():
+    arquivo = 'planilha.xlsx'
+    planilha = open_workbook(arquivo).sheet_by_index(0)
+    vetor_b = []
+
+    for linha in range(0, planilha.nrows):
+        vetor_b.append(planilha.cell_value(linha, planilha.nrows))
+
+    return vetor_b
+
 class Exercicio1:
     def __init__(self):
         self.matriz = carregar_matriz()
+        self.vetor_b = carregar_vetorb()
         self.fator_cholesky = []
 
         print_matriz(self.matriz)
+        print_vetorb(self.vetor_b)
         letra = input("a) Avaliar se é triangular superior, inferior, diagonal ou nenhuma das três.\n"
                       "b) Calcular o fator de Cholesky.\n"
                       "c) Construir matrizes L e U.\n"
@@ -132,11 +144,19 @@ class Exercicio1:
         pass
 
     def gauss_seidel(self):
+
+        arquivo = 'planilha.xlsx'
+        planilha = open_workbook(arquivo).sheet_by_index(0)
+
         matrix = []
         vetor_b = []
 
+        matrix = self.matriz
+        vetor_b = self.vetor_b
+
         m = planilha.nrows
         n = planilha.ncols
+
 
         print('Método de Gauss-Seidel')
 
@@ -158,7 +178,7 @@ class Exercicio1:
             k = k + 1
             for r in range(0, m):
                 suma = 0
-                for c in range(0, n):
+                for c in range(0, n-1):
                     if (c != r):
                         suma = suma + matrix[r][c] * x[c]
                 x[r] = (vetor_b[r] - suma) / matrix[r][r]
@@ -181,8 +201,14 @@ class Exercicio1:
 
     def elimn_gauss(self):
 
+        arquivo = 'planilha.xlsx'
+        planilha = open_workbook(arquivo).sheet_by_index(0)
+
         matrix = []
         vetor_b = []
+
+        matrix = self.matriz
+        vetor_b = self.vetor_b
 
         m = planilha.nrows
         n = planilha.ncols
@@ -193,7 +219,7 @@ class Exercicio1:
             for r in range(k + 1, m):
                 factor = (matrix[r][k] / matrix[k][k])
                 vetor_b[r] = vetor_b[r] - (factor * vetor_b[k])
-                for c in range(0, n):
+                for c in range(0, n-1):
                     matrix[r][c] = matrix[r][c] - (factor * matrix[k][c])
 
         # substituição pra trás
@@ -204,7 +230,7 @@ class Exercicio1:
 
         for r in range(m - 2, -1, -1):
             soma = 0
-            for c in range(0, n):
+            for c in range(0, n-1):
                 soma = soma + matrix[r][c] * x[c]
             x[r] = (vetor_b[r] - soma) / matrix[r][r]
 
@@ -656,6 +682,10 @@ def print_matriz(m):
             print("{0:.4f}  ".format(m[i][j]), end="")
 
         print()
+
+def print_vetorb(v):
+    for i in range(len(v)):
+        print("{0:.4f}  ".format(v[i]))
 
 Exercicio1()
 
