@@ -74,7 +74,7 @@ class Exercicio1:
         elif letra == 'k':
             pass
         elif letra == 'l':
-            pass
+            self.num_condicao()
         elif letra == 'm':
             pass
 
@@ -257,7 +257,49 @@ class Exercicio1:
         pass
 
     def num_condicao(self):
-        pass
+
+        from scipy import linalg
+
+        arquivo = 'planilha.xlsx'
+        planilha = open_workbook(arquivo).sheet_by_index(0)
+
+        m = planilha.nrows
+        n = planilha.ncols
+
+        matrix = self.matriz
+
+        A_inversa = linalg.inv(matrix)
+        print('Matriz A inversa:')
+        for i in range(0, m, 1):
+            for j in range(0, n-1, 1):
+                sys.stdout.write('%.2f\t' % A_inversa[i][j])
+            print()
+        print()
+
+        # Número condição de A: fazer norma infinita de linha
+        # Norma infinita de linha da matriz A
+        maxA = 0
+        for i in range(0, m, 1):
+            total = 0
+            for j in range(0, n-1, 1):
+                total += math.fabs(matrix[i][j])
+            if maxA < total:
+                maxA = total
+
+        # Norma infinita de linha da matriz A inversa
+        maxAI = 0
+        for i in range(0, m, 1):
+            total = 0
+            for j in range(0, n-1, 1):
+                total += math.fabs(A_inversa[i][j])
+            if maxAI < total:
+                maxAI = total
+
+        # Cálculo do número condição
+        num_cond = maxA * maxAI
+        print('Número condição:', num_cond)
+        print()
+
 
     def gradiente_conjugado(self):
         pass
