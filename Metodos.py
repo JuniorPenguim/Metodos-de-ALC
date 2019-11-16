@@ -135,25 +135,8 @@ class Exercicio1:
         matrix = []
         vetor_b = []
 
-        m = 0
-        n = 0
-
-        while (1):
-            linha = arquivo_matriz.readline()
-            if not (linha):
-                break
-
-            vetor_b.append(float(arquivo_vetorb.readline()))
-
-            matrix.append([])
-            temp_split = linha.split('\t')
-
-            for j in range(len(temp_split)):
-                matrix[m].append(float(temp_split[j]))
-
-            m = m + 1
-
-        n = len(matrix[0])
+        m = planilha.nrows
+        n = planilha.ncols
 
         print('Método de Gauss-Seidel')
 
@@ -201,25 +184,8 @@ class Exercicio1:
         matrix = []
         vetor_b = []
 
-        m = 0
-        n = 0
-
-        while (1):
-            linha = arquivo_matriz.readline()
-            if not (linha):
-                break
-
-            vetor_b.append(float(arquivo_vetorb.readline()))
-
-            matrix.append([])
-            temp_split = linha.split('\t')
-
-            for j in range(len(temp_split)):
-                matrix[m].append(float(temp_split[j]))
-
-            m = m + 1
-
-        n = len(matrix[0])
+        m = planilha.nrows
+        n = planilha.ncols
 
         x = numpy.zeros(m)
 
