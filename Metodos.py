@@ -31,6 +31,20 @@ def carregar_vetorb():
 
     return vetor_b
 
+
+def carregar_vetores():
+    arquivo = 'planilha.xlsx'
+    planilha = open_workbook(arquivo).sheet_by_index(0)
+    vetores = []
+
+    for vetor in range(0, planilha.nrows):
+        vetores.append([])
+        for indice in range(planilha.ncols):
+            vetores[vetor].append(float(planilha.cell_value(vetor, indice)))
+
+    return vetores
+
+
 class Exercicio1:
     def __init__(self):
         self.matriz = carregar_matriz()
@@ -65,13 +79,13 @@ class Exercicio1:
         elif letra == 'f':
             self.gauss_seidel()
         elif letra == 'g':
-            self.sub_prim_elemento() #subs primeiro elemento!!! trocar dps
+            self.sub_prim_elemento()  # subs primeiro elemento!!! trocar dps
         elif letra == 'h':
             self.elimn_gauss()
         elif letra == 'i':
-            self.autovalores() # autovalores!!! trocar dps
+            self.autovalores()  # autovalores!!! trocar dps
         elif letra == 'j':
-            self.sub_seg_elemento() #subs segundo elemento!!! trocar dps
+            self.sub_seg_elemento()  # subs segundo elemento!!! trocar dps
         elif letra == 'k':
             pass
         elif letra == 'l':
@@ -417,6 +431,97 @@ class Exercicio1:
             return False
 
 
+class Exercicio2:
+    def __init__(self):
+        self.matriz = carregar_vetores()
+
+        letra = input("a) Calcular o número de vetores recebidos e a média de cada linha.\n"
+                      "b) Econtrar base ortonormal de n vetores de dimensão n.\n"
+                      "c) Calcular o ângulo entre dois vetores.\n"
+                      "d) Calcular normas (1, 2, infinito e a norma induzida por uma "
+                      "matriz positiva definida) de um vetor.\n"
+                      "e) Calcular o produto interno de dois vetores.\n"
+                      "f) Calcular as normas (linha, coluna e de Frobenius) de uma matriz.\n"
+                      )
+        if letra == 'a':
+            self.num_vetores_media()
+        elif letra == 'b':
+            self.base_ortonormal()
+        elif letra == 'c':
+            self.calcular_angulo_vetores()
+        elif letra == 'd':
+            self.calcular_normas_vetores()
+        elif letra == 'e':
+            self.produto_interno_vetores()
+        elif letra == 'f':
+            self.calcular_normas_matriz()
+
+
+class Exercicio3:
+    def __init__(self):
+        self.matriz = carregar_vetores()
+
+        letra = input("a) Calcular autovalores.\n"
+                      "b) Calcular determinante.\n"
+                      )
+        if letra == 'a':
+            self.calcular_autovalores()
+        elif letra == 'b':
+            self.calcular_det()
+
+
+class Exercicio4:
+    def __init__(self):
+        self.matriz = carregar_vetores()
+
+        letra = input("a) Calcular Newton Rhapson para um polinômio de grau 10.\n"
+                      "b) Comparar raizes analíticas com Newton Rhapson.\n"
+                      )
+        if letra == 'a':
+            self.calcular_newton_rapshon()
+        elif letra == 'b':
+            self.calcular_raizes()
+
+
+class Exercicio5:
+    def __init__(self):
+        self.matriz = carregar_vetores()
+
+        letra = input("a) Calcular o número de vetores recebidos e a média de cada linha.\n"
+                      "b) Econtrar base ortonormal de n vetores de dimensão n.\n"
+                      "c) Calcular o ângulo entre dois vetores.\n"
+                      "d) Calcular normas (1, 2, infinito e a norma induzida por uma "
+                      "matriz positiva definida) de um vetor.\n"
+                      "e) Calcular o produto interno de dois vetores.\n"
+                      )
+        if letra == 'a':
+            self.num_vetores_media()
+        elif letra == 'b':
+            self.base_ortonormal()
+        elif letra == 'c':
+            self.calcular_angulo_vetores()
+        elif letra == 'd':
+            self.calcular_normas_vetores()
+        elif letra == 'e':
+            self.produto_interno_vetores()
+
+
+class Exercicio6:
+    def __init__(self):
+        self.matriz = carregar_vetores()
+
+        letra = input("a) Calcular o número de vetores recebidos e a média de cada linha.\n"
+                      "b) Econtrar base ortonormal de n vetores de dimensão n.\n"
+                      "c) Calcular o ângulo entre dois vetores.\n"
+                      )
+        if letra == 'a':
+            self.num_vetores_media()
+        elif letra == 'b':
+            self.base_ortonormal()
+        elif letra == 'c':
+            self.calcular_angulo_vetores()
+
+
 # MÉTODOS=>
 
 # zero das funções
@@ -439,7 +544,6 @@ def bissecao(func, a, b, e):
         print("|(", a, ") - (", b, ")| =", abs(a - b), ">", e)
         print()
         print("|f( ((", a, ") + (", b, ")) / 2 )| =", abs(func((a + b) / 2)), ">", e)
-
 
     return x, [a, b]
 
@@ -504,11 +608,10 @@ def newton_raphson(func, der, x0, e):
 
         i += 1
 
-
     return x
 
-# segunda ordem
 
+# segunda ordem
 
 def tangentes(qtd, a, b, func, y0):
     h = (b - a)/qtd
@@ -579,8 +682,8 @@ def rungeKutta4(qtd, a, b, func, y0):
 
     return y
 
-# integrais
 
+# integrais
 
 def simp38(qtd, a, b, func):
     h = (b - a)/qtd
@@ -696,76 +799,10 @@ def trapeziosComp(qtd, a, b, func):
 
     return rT
 
+
 # MMQ
-
-
 def MMQ(x, y):
     pass
-
-# FUNÇÕES=>
-
-
-def func(x):
-    p1 = (x ** 2)
-    p2 = (2 * x)
-    p3 = (e ** p2)
-    p4 = p1 * p3
-    if TESTE:
-        print('--\n', p1)
-        print(p2)
-        print(p3)
-        print(p4)
-    return p4
-
-
-def func2(x):
-    p1 = (x**2 + 1)
-    p2 = math.log(p1)
-    p3 = x*p2
-    if TESTE:
-        print('--\n',p1)
-        print(p2)
-        print(p3)
-    return p3
-
-# segunda ordem
-
-
-def func3(y):
-    return (-2)*y
-
-#zero das funções
-
-
-def func4(x):
-    p1 = x**5
-    p2 = x**3
-    p3 = (10/9) * p2
-    p4 = (5/21) * x
-    p5 = p1 - p3 + p4
-    return p5
-    # return (x**5) - ((10/9) * (x**3)) + ((5/10) * x)
-
-
-def der4(x):
-    p1 = 5*(x**4)
-    p2 = x**2
-    p3 = (30/9) * p2
-    p4 = p1 - p3 + (5/21)
-    return p4
-    # return (x**5) - ((10/9) * (x**3)) + ((5/10) * x)
-
-# __________________________________________________
-
-# qtdSubintervalos = 9
-
-# qtdSubintervalos = int(input("quantidade de subintervalos:"))
-# print(rungeKutta4(qtdSubintervalos, (0, 1), func3, 1))
-
-
-erro = (10**(-2))
-
-# print(newton_raphson(func4, der4, (-0.8), erro))
 
 
 def print_matriz(m):
@@ -775,10 +812,30 @@ def print_matriz(m):
 
         print()
 
+
 def print_vetorb(v):
     for i in range(len(v)):
         print("{0:.4f}  ".format(v[i]))
 
-Exercicio1()
+
+questao = input("Exercício 1).\n"
+                "Exercício 2).\n"
+                "Exercício 3).\n"
+                "Exercício 4)."
+                "Exercício 5).\n"
+                "Exercício 6).\n"
+                )
+if questao == '1':
+    Exercicio1()
+elif questao == '2':
+    Exercicio2()
+elif questao == '3':
+    Exercicio3()
+elif questao == '4':
+    Exercicio4()
+elif questao == '5':
+    Exercicio5()
+elif questao == '6':
+    Exercicio6()
 
 
