@@ -157,6 +157,62 @@ class Exercicio1:
 
     def jacobi(self):
         pass
+    #     # Separa a matriz em duas matrizes, a matriz diagonal e a M,
+    #     # sendo diagonal a matriz que contém os elementos da diagonal pincipal da matriz A
+    #     # M contendo todos os elementos da matriz, menos a diagonal principal
+    #
+    #     matriz = self.matriz
+    #     diagonal = []
+    #     m = []
+    #     vetor_b = self.vetor_b
+    #
+    #     for i in range(len(matriz)):
+    #         diagonal.append([])
+    #         m.append([])
+    #         for j in range(len(matriz)):
+    #             diagonal[i].append(0)
+    #             m[i].append(0)
+    #
+    #     for i in range(len(matriz)):
+    #         for j in range(i + 1):
+    #             if i == j:
+    #                 diagonal[i][j] = matriz[i][j]
+    #
+    #     for i in range(len(matriz)):
+    #         for j in range(len(matriz)):
+    #             if i != j:
+    #                 m[i][j] = matriz[i][j]
+    #
+    # d_ = matrix(d).I
+    #
+    # X = matrix(X)
+    # itera = 0
+    #
+    # """Começo das iterações"""
+    # while True:
+    #
+    #     X0 = X
+    #
+    #     X = d_ * vetorB - d_ * M * X
+    #
+    #     itera += 1
+    #
+    #     Result = X - X0
+    #
+    #     maiorX = 0
+    #
+    #     for i in range(len(Result)):
+    #         for j in range(len(Result[i])):
+    #             if Result[i][j] < 0:
+    #                 if maiorX < -Result[i][j]:
+    #                     maiorX = float(-Result[i][j])
+    #             else:
+    #                 if maiorX < Result[i][j]:
+    #                     maiorX = float(Result[i][j])
+    #
+    #     if maiorX < erro:
+    #         print('Método parou na {} iteração e obteve como resultado \nX = {}\ne erro = {}'.format(itera, X, maiorX))
+    #         break
 
     def gauss_seidel(self):
 
@@ -481,6 +537,62 @@ class Exercicio4:
             self.calcular_newton_rapshon()
         elif letra == 'b':
             self.calcular_raizes()
+
+    def calcular_newton_rapshon(self):
+
+        def func(x):
+            y = 0
+            ex = 10
+            for c in coeficientes:
+                y += c*(x**ex)
+                ex -= 1
+
+            return y
+
+        def der(x):
+            y = 0
+            ex = 10
+            for c in coeficientes:
+                if (ex - 1) >= 0:
+                    y += (ex * c) * (x ** (ex - 1))
+                ex -= 1
+
+            return y
+
+        coeficientes = []  # vetor contendo os coeficientes
+        for i in range(11)[::-1]:
+            coef = float(input("Digite o coeficiente para o x^{}:".format(i)))
+            coeficientes.append(coef)
+        # print("A função ficou com a seguinte cara:\n"
+        #       "{}x^10 + {}x^9 + {}x^8 + {}x^7 + {}x^6 + {}x^5 + {}x^4 + {}x^3 + {}x^2 + {}x + {}".format
+        #       (coeficientes[0], coeficientes[1], coeficientes[2], coeficientes[3], coeficientes[4],
+        #        coeficientes[5], coeficientes[6], coeficientes[7], coeficientes[8], coeficientes[9], coeficientes[10]))
+
+        x0 = float(input("Digite o valor do x incial:"))  # substituir pelo velor do x inicial
+        e = float(input("Digite o valor do erro admitido:"))  # substituir pelo valor do erro
+
+        def E(x0, x1, func):
+            return [abs(func(x1)), abs(x1 - x0)]
+
+        i = 0
+        x = [x0]
+        er = [e + 1.0, e + 1.0]
+
+        while er[0] > e and er[1] > e:
+            p1 = func(x[i]) / der(x[i])
+            p2 = x[i] - p1
+
+            x.append(p2)
+            print(x[i])
+
+            er = E(x[i], x[i + 1], func)
+
+            i += 1
+
+        return x
+
+    def calcular_raizes(self):
+        pass
 
 
 class Exercicio5:
@@ -821,7 +933,7 @@ def print_vetorb(v):
 questao = input("Exercício 1).\n"
                 "Exercício 2).\n"
                 "Exercício 3).\n"
-                "Exercício 4)."
+                "Exercício 4).\n"
                 "Exercício 5).\n"
                 "Exercício 6).\n"
                 )
