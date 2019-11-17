@@ -3,6 +3,7 @@ from numpy.core import double
 import numpy
 from xlrd import *
 from random import *
+from numpy import linalg as LA
 seed(1)
 
 
@@ -15,7 +16,7 @@ def carregar_matriz():
     for linha in range(planilha.nrows):
         matriz.append([])
         for col in range(0, planilha.ncols -1):
-            matriz[linha].append(planilha.cell_value(linha, col))
+            matriz[linha].append(float(planilha.cell_value(linha, col)))
 
     return matriz
 
@@ -64,13 +65,13 @@ class Exercicio1:
         elif letra == 'f':
             self.gauss_seidel()
         elif letra == 'g':
-            pass
+            self.sub_prim_elemento() #subs primeiro elemento!!! trocar dps
         elif letra == 'h':
             self.elimn_gauss()
         elif letra == 'i':
-            pass
+            self.autovalores() # autovalores!!! trocar dps
         elif letra == 'j':
-            pass
+            self.sub_seg_elemento() #subs segundo elemento!!! trocar dps
         elif letra == 'k':
             pass
         elif letra == 'l':
@@ -270,8 +271,8 @@ class Exercicio1:
 
         A_inversa = linalg.inv(matrix)
         print('Matriz A inversa:')
-        for i in range(0, m, 1):
-            for j in range(0, n-1, 1):
+        for i in range(0, m):
+            for j in range(0, n-1):
                 sys.stdout.write('%.2f\t' % A_inversa[i][j])
             print()
         print()
@@ -303,6 +304,55 @@ class Exercicio1:
 
     def gradiente_conjugado(self):
         pass
+
+    def sub_prim_elemento(self):
+
+        arquivo = 'planilha.xlsx'
+        planilha = open_workbook(arquivo).sheet_by_index(0)
+
+        matrix = self.matriz
+
+        matrix_fim = []
+
+        for linha in range(planilha.nrows):
+            matrix_fim.append([])
+            for coluna in range(planilha.ncols-1):
+                aux = str(matrix[linha][coluna])
+                matrix_fim[linha].append(int(aux[0]))
+
+
+        print_matriz(matrix_fim)
+
+    def sub_seg_elemento(self):
+
+        arquivo = 'planilha.xlsx'
+        planilha = open_workbook(arquivo).sheet_by_index(0)
+
+        matrix = self.matriz
+
+        matrix_fim = []
+
+        for linha in range(planilha.nrows):
+            matrix_fim.append([])
+            for coluna in range(planilha.ncols - 1):
+                aux = str(matrix[linha][coluna])
+                if aux[1] == '.':
+                    matrix_fim[linha].append(int(aux[0]))
+                else:
+                    matrix_fim[linha].append(int(aux[1]))
+
+
+        print_matriz(matrix_fim)
+
+    def autovalores(self):
+
+        matrix = self.matriz
+        autov = []
+
+        autov = LA.eigvals(matrix)
+
+        print(autov)
+
 
     def is_diagonal(self):
         for i in range(len(self.matriz)):
