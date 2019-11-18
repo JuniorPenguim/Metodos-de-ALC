@@ -1,9 +1,9 @@
 import math
-from numpy.core import double
-import numpy
+import numpy as np
 from xlrd import *
 from random import *
-from numpy import linalg as LA
+from numpy import linalg as la
+
 seed(1)
 
 
@@ -151,116 +151,129 @@ class Exercicio1:
         pass
 
     def avaliar_criterios(self):
-        pass
+        linhas = self.criterio_linhas()
+        colunas = self.criterio_colunas()
+        sassenfeld = self.criterio_sassenfeld()
+        normas = self.criterio_normas()
+
+        if linhas:
+            linhas = "satisfaz o critério das linhas"
+        else:
+            linhas = "não satisfaz o critério das linhas"
+
+        if colunas:
+            colunas = "satisfaz o critério das colunas"
+        else:
+            colunas = "não satisfaz o critério das colunas"
+
+        if sassenfeld:
+            sassenfeld = "satisfaz o critério de Sassenfeld, ou seja," \
+                         " a convergência do método de Gauss-Seidel é garantida"
+        else:
+            sassenfeld = "não satisfaz o critério de Sassenfeld"
+
+        if normas:
+            normas = "satisfaz o critério das normas"
+        else:
+            normas = "não satisfaz o critério das normas"
+
+        print("A matriz A {}, {}, {}, {}.".format(linhas, colunas, sassenfeld, normas))
 
     def jacobi(self):
-        pass
-    #     # Separa a matriz em duas matrizes, a matriz diagonal e a M,
-    #     # sendo diagonal a matriz que contém os elementos da diagonal pincipal da matriz A
-    #     # M contendo todos os elementos da matriz, menos a diagonal principal
-    #
-    #     matriz = self.matriz
-    #     diagonal = []
-    #     m = []
-    #     vetor_b = self.vetor_b
-    #
-    #     for i in range(len(matriz)):
-    #         diagonal.append([])
-    #         m.append([])
-    #         for j in range(len(matriz)):
-    #             diagonal[i].append(0)
-    #             m[i].append(0)
-    #
-    #     for i in range(len(matriz)):
-    #         for j in range(i + 1):
-    #             if i == j:
-    #                 diagonal[i][j] = matriz[i][j]
-    #
-    #     for i in range(len(matriz)):
-    #         for j in range(len(matriz)):
-    #             if i != j:
-    #                 m[i][j] = matriz[i][j]
-    #
-    # d_ = matrix(d).I
-    #
-    # X = matrix(X)
-    # itera = 0
-    #
-    # """Começo das iterações"""
-    # while True:
-    #
-    #     X0 = X
-    #
-    #     X = d_ * vetorB - d_ * M * X
-    #
-    #     itera += 1
-    #
-    #     Result = X - X0
-    #
-    #     maiorX = 0
-    #
-    #     for i in range(len(Result)):
-    #         for j in range(len(Result[i])):
-    #             if Result[i][j] < 0:
-    #                 if maiorX < -Result[i][j]:
-    #                     maiorX = float(-Result[i][j])
-    #             else:
-    #                 if maiorX < Result[i][j]:
-    #                     maiorX = float(Result[i][j])
-    #
-    #     if maiorX < erro:
-    #         print('Método parou na {} iteração e obteve como resultado \nX = {}\ne erro = {}'.format(itera, X, maiorX))
-    #         break
+
+        matriz = np.array(self.matriz)
+        vetor_b = np.array(self.vetor_b)
+        vetor_x = []  # vetor contendo os valores inciais de x
+        diagonal = []  # diagonal é a matriz que contém os elementos da diagonal pincipal da matriz A
+        m = []  # M contendo todos os elementos da matriz A, menos a diagonal principal
+        erro = float(input("Digite o valor da tolerancia:"))
+
+        for i in range(len(matriz)):
+            vetor_x.append(float(input("Digite o valor inicial para x{}:".format(i))))
+
+        for i in range(len(matriz)):
+            diagonal.append([])
+            m.append([])
+            for j in range(len(matriz)):
+                diagonal[i].append(0)
+                m[i].append(0)
+
+        for i in range(len(matriz)):
+            for j in range(len(matriz)):
+                if i == j:
+                    diagonal[i][j] = matriz[i][j]
+                else:
+                    m[i][j] = matriz[i][j]
+
+        d_inversa = la.inv(np.array(diagonal))  # Retorna a inversa da matriz diagonal
+        vetor_x = np.array(vetor_x)
+
+        # Começo das iterações
+        itera = 0
+        while True:
+
+            vetor_x0 = vetor_x
+
+            vetor_x = d_inversa * vetor_b - d_inversa * m * vetor_x
+            itera += 1
+
+            resultado = vetor_x - vetor_x0
+
+            maior_x = 0
+
+            for i in range(len(resultado)):
+                for j in range(len(resultado[i])):
+                    if resultado[i][j] < 0:
+                        if maior_x < -resultado[i][j]:
+                            maior_x = float(-resultado[i][j])
+                    else:
+                        if maior_x < resultado[i][j]:
+                            maior_x = float(resultado[i][j])
+
+            if maior_x < erro:
+                print('Método parou na {} iteração e obteve como resultado \nX = {}\ne erro = {}'.format
+                      (itera, vetor_x.tolist(), maior_x))
+                break
 
     def gauss_seidel(self):
 
-        arquivo = 'planilha.xlsx'
-        planilha = open_workbook(arquivo).sheet_by_index(0)
-
-        matrix = []
-        vetor_b = []
-
         matrix = self.matriz
         vetor_b = self.vetor_b
-
-        m = planilha.nrows
-        n = planilha.ncols
-
 
         print('Método de Gauss-Seidel')
 
         tolerancia = float(input("Qual eh a tolerancia? "))
 
-        x = numpy.zeros(m)
+        x = np.zeros(len(matrix))
         k = 0
 
-        solucao_ant = numpy.zeros(m)
+        solucao_ant = np.zeros(len(matrix))
 
         for i in solucao_ant:
             i = math.inf
 
         flag = 0
 
-        while (1):
+        while True:
 
             suma = 0
             k = k + 1
-            for r in range(0, m):
+            for r in range(0, len(matrix)):
                 suma = 0
-                for c in range(0, n-1):
-                    if (c != r):
+                for c in range(0, len(matrix[r])-1):
+                    if c != r:
                         suma = suma + matrix[r][c] * x[c]
                 x[r] = (vetor_b[r] - suma) / matrix[r][r]
                 print("x[" + str(r) + "]: " + str(x[r]))
 
             for j in range(0, len(x)):
 
-                if (abs(x[j] - solucao_ant[j]) < tolerancia):
+                if abs(x[j] - solucao_ant[j]) < tolerancia:
                     flag = 1
 
                 else:
                     flag = 0
-            if (flag == 1):
+            if flag == 1:
                 break
 
             solucao_ant = x.copy()
@@ -270,25 +283,19 @@ class Exercicio1:
 
     def elimn_gauss(self):
 
-        arquivo = 'planilha.xlsx'
-        planilha = open_workbook(arquivo).sheet_by_index(0)
-
-        matrix = []
-        vetor_b = []
-
         matrix = self.matriz
         vetor_b = self.vetor_b
 
-        m = planilha.nrows
-        n = planilha.ncols
+        m = len(matrix)
+        n = len(matrix[0])
 
-        x = numpy.zeros(m)
+        x = np.zeros(m)
 
         for k in range(0, m):
             for r in range(k + 1, m):
                 factor = (matrix[r][k] / matrix[k][k])
                 vetor_b[r] = vetor_b[r] - (factor * vetor_b[k])
-                for c in range(0, n-1):
+                for c in range(0, n):
                     matrix[r][c] = matrix[r][c] - (factor * matrix[k][c])
 
         # substituição pra trás
@@ -299,7 +306,7 @@ class Exercicio1:
 
         for r in range(m - 2, -1, -1):
             soma = 0
-            for c in range(0, n-1):
+            for c in range(0, n):
                 soma = soma + matrix[r][c] * x[c]
             x[r] = (vetor_b[r] - soma) / matrix[r][r]
 
@@ -308,7 +315,7 @@ class Exercicio1:
         for linha in matrix:
             for elemento in linha:
                 print(elemento, end=" ")
-            print("")
+            print()
 
         print("Resultado do vetor b: ")
 
@@ -368,7 +375,6 @@ class Exercicio1:
         num_cond = maxA * maxAI
         print('Número condição:', num_cond)
         print()
-
 
     def gradiente_conjugado(self):
         pass
@@ -435,10 +441,55 @@ class Exercicio1:
                 print("xT*A*x <= 0.")
             return False
 
+    def criterio_linhas(self):
+        matriz = self.matriz
+
+        for i in range(len(matriz)):
+            soma = 0
+            for j in range(len(matriz[i])):
+                if i != j:
+                    soma += matriz[i][j]
+            if abs(soma) >= abs(matriz[i][i]):
+                return False
+
+        return True
+
+    def criterio_colunas(self):
+        matriz = self.matriz
+
+        for j in range(len(matriz[0])):
+            soma = 0
+            for i in range(len(matriz)):
+                if i != j:
+                    soma += matriz[i][j]
+            if abs(soma) >= abs(matriz[j][j]):
+                return False
+
+        return True
+
+    def criterio_sassenfeld(self):
+        matriz = self.matriz
+        b = []
+
+        for j in range(len(matriz[0])):
+            soma = 0
+            for i in range(len(matriz)):
+                if i != j:
+                    soma += matriz[i][j]  # Ainda necessario ver como fica o somatório aqui
+            b.append(soma / abs(matriz[j][j]))
+
+        if max(b) < 1:
+            return True
+        else:
+            return False
+
+    def criterio_normas(self):
+        return False
+
 
 class Exercicio2:
     def __init__(self):
-        self.matriz = carregar_vetores()
+        self.vetores = carregar_vetores()
 
         letra = input("a) Calcular o número de vetores recebidos e a média de cada linha.\n"
                       "b) Econtrar base ortonormal de n vetores de dimensão n.\n"
@@ -460,6 +511,49 @@ class Exercicio2:
             self.produto_interno_vetores()
         elif letra == 'f':
             self.calcular_normas_matriz()
+
+    def num_vetores_media(self):
+        vetores = self.vetores
+        cont = 0
+        medias = []
+
+        for vetor in vetores:
+            cont += 1
+            soma = 0
+            for item in vetor:
+                soma += item
+            medias.append(soma/len(vetor))
+
+        print("Recebidos {} vetores.".format(cont))
+        for m in range(len(medias)):
+            print("media do {}º vetor = {};".format(m+1, medias[m]))
+
+    def base_ortonormal(self):
+        pass
+
+    def calcular_angulo_vetores(self):
+        i1 = int(input("Escolha um vetor entre os 0-{} possíveis por número:".format(len(self.vetores)-1)))
+        i2 = int(input("Escolha um segundo vetor:"))
+        vet1 = np.array(self.vetores[i1])
+        vet2 = np.array(self.vetores[i2])
+        # print("x =", vet1)
+        # print("y =", vet2)
+        # print("<x ,y> =", np.dot(vet1, vet2))
+        # print("||x|| =", la.norm(vet1))
+        # print("||y|| =", la.norm(vet2))
+
+        angulo = np.arccos(np.dot(vet1, vet2)/(la.norm(vet1)*la.norm(vet2)))
+
+        print("O ângulo entre os vetores {} e {} é de {} radianos".format(i1, i2, angulo))
+
+    def calcular_normas_vetores(self):
+        pass
+
+    def produto_interno_vetores(self):
+        pass
+
+    def calcular_normas_matriz(self):
+        pass
 
 
 class Exercicio3:
@@ -488,6 +582,7 @@ class Exercicio3:
         autov = LA.eigvals(matrix)
 
         print(autov)
+
 
 class Exercicio4:
     def __init__(self):
@@ -532,7 +627,7 @@ class Exercicio4:
         #        coeficientes[5], coeficientes[6], coeficientes[7], coeficientes[8], coeficientes[9], coeficientes[10]))
 
         x0 = float(input("Digite o valor do x incial:"))  # substituir pelo velor do x inicial
-        e = float(input("Digite o valor do erro admitido:"))  # substituir pelo valor do erro
+        e = float(input("Digite o valor da tolerancia:"))
 
         def E(x0, x1, func):
             return [abs(func(x1)), abs(x1 - x0)]
@@ -566,7 +661,6 @@ class Exercicio5:
 
         print_matriz(self.matriz)
         print_vetorb(self.vetor_b)
-
 
         letra = input("a) Construir uma função que substitua cada elemento da matriz pelo seu primeiro dígito.\n"
                       "b) Construir uma função que substitua cada elemento da matriz pelo seu segundo dígito\n"
@@ -626,6 +720,7 @@ class Exercicio5:
 
     def plotar_result(self):
         pass
+
 
 class Exercicio6:
     def __init__(self):
@@ -700,32 +795,6 @@ def falsaPosi(func, a, b, e):
             a = x
         else:
             b = x
-
-        i += 1
-
-
-    return x
-
-
-def newton_raphson(func, der, x0, e):
-    def E(x0, x1, func):
-        return [abs(func(x1)), abs(x1 - x0)]
-
-    i = 0
-    x = [x0]
-    er = [e+1, e+1]
-
-    while er[0] > e and er[1] > e:
-        p1 = func(x[i]) / der(x[i])
-        p2 = x[i] - p1
-
-        print("p1 =", p1)
-        print("p2 = ", p2)
-
-        x.append(p2)
-        print(x)
-
-        er = E(x[i], x[i+1], func)
 
         i += 1
 
