@@ -1,19 +1,19 @@
 # Métodos de Algebra Linear Computacional
 
 ### Questão 1: Considerando o recebimento de um arquivo .xls contendo uma matriz A e um vetor b:
--[x] a) construa uma função avalie se a matriz A é triangular superior, inferior, diagonal ou nenhum dos três.  
--[x] b) construa uma função que calcule o fator de Cholesky ou indique não ser possível calculá-lo.  
--[ ] c) construa uma função que exiba as matrizes L e U (associadas a A).  
--[ ] d) construa uma função que avalie se o critério das linhas, das colunas, Sassenfeld e norma são atendido (informe ao usuário essa situação e o que isso significa).  
--[x] e) construa uma função que implemente o método iterativo de Jacobi.  
--[x] f) construa uma função que implemente o método iterativo de Gauss-Seidel.  
--[ ] g) construa uma função que implemente o método SOR.  
--[x] h) construa uma função que implemente o método da eliminação de Gauss.  
--[ ] i) construa uma função que implemente a decomposição SVD.  
--[ ] k) construa uma função que implemente a fatoração QR.  
--[x] l) construa uma função que calcule o número condição de A e retorne ao usuário o que isso significa.  
--[ ] m) construa uma função que implemente o método de gradiente conjugado.  
--[ ] n) resolva o sistema Ax = b com os métodos anteriores (se for possível).  
+- [x] a) construa uma função avalie se a matriz A é triangular superior, inferior, diagonal ou nenhum dos três.
+- [x] b) construa uma função que calcule o fator de Cholesky ou indique não ser possível calculá-lo.
+- [ ] c) construa uma função que exiba as matrizes L e U (associadas a A).
+- [ ] d) construa uma função que avalie se o critério das linhas, das colunas, Sassenfeld e norma são atendido (informe ao usuário essa situação e o que isso significa).
+- [x] e) construa uma função que implemente o método iterativo de Jacobi.  
+- [x] f) construa uma função que implemente o método iterativo de Gauss-Seidel.  
+- [ ] g) construa uma função que implemente o método SOR.  
+- [x] h) construa uma função que implemente o método da eliminação de Gauss.  
+- [ ] i) construa uma função que implemente a decomposição SVD.  
+- [ ] k) construa uma função que implemente a fatoração QR.  
+- [x] l) construa uma função que calcule o número condição de A e retorne ao usuário o que isso significa.  
+- [ ] m) construa uma função que implemente o método de gradiente conjugado.  
+- [ ] n) resolva o sistema Ax = b com os métodos anteriores (se for possível).  
 
 ### Questão 2: Considerando o recebimento de um arquivo .xls contendo n vetores dispostos em linha:
 -[ ] a) construa uma função retorne o número de vetores recebidos e a média de cada linha.
