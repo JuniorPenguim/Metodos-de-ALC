@@ -25,7 +25,7 @@
 
 ### Questão 3: Considerando o recebimento de um arquivo .xls contendo uma matriz A quadrada:
 -[x] a) construa uma função retorne os autovalores da matriz
--[x] b) construa uma função que obtenha o determinante da matriz.
+-[ ] b) construa uma função que obtenha o determinante da matriz.
 
 ### Questão 4: 
 -[x] a) construa uma função que implemente o método de Newton Raphson para um polinômio de Grau 10 cujos coeficientes sejam passados pelo usuário ou gerados de maneira randômica.

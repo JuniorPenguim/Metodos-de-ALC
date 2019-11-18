@@ -79,13 +79,11 @@ class Exercicio1:
         elif letra == 'f':
             self.gauss_seidel()
         elif letra == 'g':
-            self.sub_prim_elemento()  # subs primeiro elemento!!! trocar dps
+            pass
         elif letra == 'h':
             self.elimn_gauss()
         elif letra == 'i':
-            self.autovalores()  # autovalores!!! trocar dps
-        elif letra == 'j':
-            self.sub_seg_elemento()  # subs segundo elemento!!! trocar dps
+            pass
         elif letra == 'k':
             pass
         elif letra == 'l':
@@ -375,55 +373,6 @@ class Exercicio1:
     def gradiente_conjugado(self):
         pass
 
-    def sub_prim_elemento(self):
-
-        arquivo = 'planilha.xlsx'
-        planilha = open_workbook(arquivo).sheet_by_index(0)
-
-        matrix = self.matriz
-
-        matrix_fim = []
-
-        for linha in range(planilha.nrows):
-            matrix_fim.append([])
-            for coluna in range(planilha.ncols-1):
-                aux = str(matrix[linha][coluna])
-                matrix_fim[linha].append(int(aux[0]))
-
-
-        print_matriz(matrix_fim)
-
-    def sub_seg_elemento(self):
-
-        arquivo = 'planilha.xlsx'
-        planilha = open_workbook(arquivo).sheet_by_index(0)
-
-        matrix = self.matriz
-
-        matrix_fim = []
-
-        for linha in range(planilha.nrows):
-            matrix_fim.append([])
-            for coluna in range(planilha.ncols - 1):
-                aux = str(matrix[linha][coluna])
-                if aux[1] == '.':
-                    matrix_fim[linha].append(int(aux[0]))
-                else:
-                    matrix_fim[linha].append(int(aux[1]))
-
-
-        print_matriz(matrix_fim)
-
-    def autovalores(self):
-
-        matrix = self.matriz
-        autov = []
-
-        autov = LA.eigvals(matrix)
-
-        print(autov)
-
-
     def is_diagonal(self):
         for i in range(len(self.matriz)):
             for j in range(len(self.matriz[i])):
@@ -515,16 +464,30 @@ class Exercicio2:
 
 class Exercicio3:
     def __init__(self):
-        self.matriz = carregar_vetores()
+
+        self.matriz = carregar_matriz()
+        self.vetor_b = carregar_vetorb()
+
+        print_matriz(self.matriz)
+        print_vetorb(self.vetor_b)
+
 
         letra = input("a) Calcular autovalores.\n"
                       "b) Calcular determinante.\n"
                       )
         if letra == 'a':
-            self.calcular_autovalores()
+            self.autovalores()
         elif letra == 'b':
             self.calcular_det()
 
+    def autovalores(self):
+
+        matrix = self.matriz
+        autov = []
+
+        autov = LA.eigvals(matrix)
+
+        print(autov)
 
 class Exercicio4:
     def __init__(self):
@@ -597,26 +560,72 @@ class Exercicio4:
 
 class Exercicio5:
     def __init__(self):
-        self.matriz = carregar_vetores()
 
-        letra = input("a) Calcular o número de vetores recebidos e a média de cada linha.\n"
-                      "b) Econtrar base ortonormal de n vetores de dimensão n.\n"
-                      "c) Calcular o ângulo entre dois vetores.\n"
-                      "d) Calcular normas (1, 2, infinito e a norma induzida por uma "
-                      "matriz positiva definida) de um vetor.\n"
-                      "e) Calcular o produto interno de dois vetores.\n"
+        self.matriz = carregar_matriz()
+        self.vetor_b = carregar_vetorb()
+
+        print_matriz(self.matriz)
+        print_vetorb(self.vetor_b)
+
+
+        letra = input("a) Construir uma função que substitua cada elemento da matriz pelo seu primeiro dígito.\n"
+                      "b) Construir uma função que substitua cada elemento da matriz pelo seu segundo dígito\n"
+                      "c) Construir uma função que calcule a estatística de Benford para cada dígito \n"
+                      "d) Plotar os resultados obtidos em (c) colocando no mesmo gráfico os valores esperados "
                       )
         if letra == 'a':
-            self.num_vetores_media()
+            self.sub_prim_elemento()
         elif letra == 'b':
-            self.base_ortonormal()
+            self.sub_seg_elemento()
         elif letra == 'c':
-            self.calcular_angulo_vetores()
+            self.calcular_estat()
         elif letra == 'd':
-            self.calcular_normas_vetores()
-        elif letra == 'e':
-            self.produto_interno_vetores()
+            self.plotar_result()
 
+    def sub_prim_elemento(self):
+
+        arquivo = 'planilha.xlsx'
+        planilha = open_workbook(arquivo).sheet_by_index(0)
+
+        matrix = self.matriz
+
+        matrix_fim = []
+
+        for linha in range(planilha.nrows):
+            matrix_fim.append([])
+            for coluna in range(planilha.ncols-1):
+                aux = str(matrix[linha][coluna])
+                matrix_fim[linha].append(int(aux[0]))
+
+
+        print_matriz(matrix_fim)
+
+    def sub_seg_elemento(self):
+
+        arquivo = 'planilha.xlsx'
+        planilha = open_workbook(arquivo).sheet_by_index(0)
+
+        matrix = self.matriz
+
+        matrix_fim = []
+
+        for linha in range(planilha.nrows):
+            matrix_fim.append([])
+            for coluna in range(planilha.ncols - 1):
+                aux = str(matrix[linha][coluna])
+                if aux[1] == '.':
+                    matrix_fim[linha].append(int(aux[0]))
+                else:
+                    matrix_fim[linha].append(int(aux[1]))
+
+
+        print_matriz(matrix_fim)
+
+    def calcular_estat(self):
+        pass
+
+    def plotar_result(self):
+        pass
 
 class Exercicio6:
     def __init__(self):
