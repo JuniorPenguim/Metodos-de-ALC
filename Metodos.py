@@ -592,7 +592,7 @@ class Questao2:
         for m in range(len(medias)):
             print("media do {}º vetor = {};".format(m+1, medias[m]))
 
-    def base_ortonormal(self):
+    def base_ortonormal(self):  # Gram-Schmidt
         pass
 
     def calcular_angulo_vetores(self):
