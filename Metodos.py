@@ -45,11 +45,13 @@ def carregar_vetores():
     return vetores
 
 
-class Exercicio1:
+class Questao1:
     def __init__(self):
         self.matriz = carregar_matriz()
         self.vetor_b = carregar_vetorb()
         self.fator_cholesky = []
+        self.matriz_l = []
+        self.matriz_u = []
 
         print_matriz(self.matriz)
         print_vetorb(self.vetor_b)
@@ -148,7 +150,50 @@ class Exercicio1:
             print("Não é possível calcular o Fator de Cholesky")
 
     def lu(self):
-        pass
+        if self.verificar_det_submatrizes():
+
+            matriz = np.array(self.matriz)
+            matriz_l = self.matriz_l
+            matriz_u = self.matriz_u
+
+            for i in range(len(matriz)):
+                matriz_l.append([])
+                matriz_u.append([])
+                for j in range(len(matriz[i])):
+                    if i == j:
+                        matriz_l[i].append(1)
+                    else:
+                        matriz_l[i].append(0)
+                    matriz_u[i].append(0)
+
+            for j in range(len(matriz)):  # u0j = a0j
+                matriz_u[0][j] = matriz[0][j]
+
+            for i in range(1, len(matriz)):  # li0 = ai0/u10
+                matriz_l[i][0] = matriz[i][0]/matriz_u[0][0]
+
+            for k in range(1, len(matriz)):  # ukj = akj - soamatorio[0-(k-1), m](lkm * uml) k = 1..n
+                soma = 0
+                for j in range(k, len(matriz)):
+                    for m in range(k-1):
+                        soma += matriz_l[k][m] * matriz_u[m][j]
+                    matriz_u[k][j] = matriz[k][j] - soma
+
+            for k in range(2, len(matriz)):  # lik = aik - soamatorio[0-(k-1), m](lim * umk) k = 2..n
+                soma = 0
+                for i in range(k+1, len(matriz)):
+                    for m in range(k-1):
+                        soma += matriz_l[i][m] * matriz_u[m][k]
+                    matriz_l[i][k] = matriz_u[k][k]**(-1) * (matriz[i][k] - soma)
+
+            # print(np.array(matriz_l))
+            # print(np.array(matriz_u))
+            self.matriz_l = matriz_l
+            self.matriz_u = matriz_u
+
+        else:
+            print("Um dos determinantes das submatrizes é igual a zero, "
+                  "portanto não é possível prosseguir e encontrar as matrizes L e U")
 
     def avaliar_criterios(self):
         linhas = self.criterio_linhas()
@@ -486,8 +531,27 @@ class Exercicio1:
     def criterio_normas(self):
         return False
 
+    def verificar_det_submatrizes(self):
+        matriz = self.matriz
+        d = 0
 
-class Exercicio2:
+        for u in range(len(matriz)):
+            sub_matriz = []
+
+            for i in range(len(matriz) - d):
+                if d > 0:
+                    sub_matriz.append(matriz[i][:-d])
+                else:
+                    sub_matriz.append(matriz[i][:])
+
+            if la.det(sub_matriz) == 0:
+                return False
+            d += 1
+
+        return True
+
+
+class Questao2:
     def __init__(self):
         self.vetores = carregar_vetores()
 
@@ -550,13 +614,24 @@ class Exercicio2:
         pass
 
     def produto_interno_vetores(self):
-        pass
+        i1 = int(input("Escolha um vetor entre os 0-{} possíveis por número:".format(len(self.vetores) - 1)))
+        i2 = int(input("Escolha um segundo vetor:"))
+        vet1 = np.array(self.vetores[i1])
+        vet2 = np.array(self.vetores[i2])
+        print("x =", vet1)
+        print("y =", vet2)
+
+        soma = 0
+        for i in range(len(vet1)):
+            soma += vet1[i] * vet2[i]
+
+        print("O produto interno entre os vetores {} e {} é de {}".format(i1, i2, soma))
 
     def calcular_normas_matriz(self):
         pass
 
 
-class Exercicio3:
+class Questao3:
     def __init__(self):
 
         self.matriz = carregar_matriz()
@@ -584,7 +659,7 @@ class Exercicio3:
         print(autov)
 
 
-class Exercicio4:
+class Questao4:
     def __init__(self):
         self.matriz = carregar_vetores()
 
@@ -653,7 +728,7 @@ class Exercicio4:
         pass
 
 
-class Exercicio5:
+class Questao5:
     def __init__(self):
 
         self.matriz = carregar_matriz()
@@ -722,20 +797,23 @@ class Exercicio5:
         pass
 
 
-class Exercicio6:
+class Questao6:
     def __init__(self):
         self.matriz = carregar_vetores()
 
-        letra = input("a) Calcular o número de vetores recebidos e a média de cada linha.\n"
-                      "b) Econtrar base ortonormal de n vetores de dimensão n.\n"
-                      "c) Calcular o ângulo entre dois vetores.\n"
+        letra = input("a) Calcular Naive Bayes.\n"
+                      "b) Calcular Dendrogramação.\n"
+                      "c) Calcular método de Érito Marques.\n"
                       )
         if letra == 'a':
-            self.num_vetores_media()
+            self.naive_bayes()
         elif letra == 'b':
             self.base_ortonormal()
         elif letra == 'c':
             self.calcular_angulo_vetores()
+
+    def naive_bayes(self):
+        pass
 
 
 # MÉTODOS=>
@@ -1008,24 +1086,24 @@ def print_vetorb(v):
         print("{0:.4f}  ".format(v[i]))
 
 
-questao = input("Exercício 1).\n"
-                "Exercício 2).\n"
-                "Exercício 3).\n"
-                "Exercício 4).\n"
-                "Exercício 5).\n"
-                "Exercício 6).\n"
+questao = input("Questão 1).\n"
+                "Questão 2).\n"
+                "Questão 3).\n"
+                "Questão 4).\n"
+                "Questão 5).\n"
+                "Questão 6).\n"
                 )
 if questao == '1':
-    Exercicio1()
+    Questao1()
 elif questao == '2':
-    Exercicio2()
+    Questao2()
 elif questao == '3':
-    Exercicio3()
+    Questao3()
 elif questao == '4':
-    Exercicio4()
+    Questao4()
 elif questao == '5':
-    Exercicio5()
+    Questao5()
 elif questao == '6':
-    Exercicio6()
+    Questao6()
 
 

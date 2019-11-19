@@ -3,7 +3,7 @@
 ### Questão 1: Considerando o recebimento de um arquivo .xls contendo uma matriz A e um vetor b:
 - [x] a) construa uma função avalie se a matriz A é triangular superior, inferior, diagonal ou nenhum dos três.
 - [x] b) construa uma função que calcule o fator de Cholesky ou indique não ser possível calculá-lo.
-- [ ] c) construa uma função que exiba as matrizes L e U (associadas a A).
+- [x] c) construa uma função que exiba as matrizes L e U (associadas a A).
 - [ ] d) construa uma função que avalie se o critério das linhas, das colunas, Sassenfeld e norma são atendidos (informe ao usuário essa situação e o que isso significa).
 - [x] e) construa uma função que implemente o método iterativo de Jacobi.
 - [x] f) construa uma função que implemente o método iterativo de Gauss-Seidel.
@@ -20,7 +20,7 @@
 - [ ] b) construa uma função que receba n vetores de dimensão n é encontre uma base ortonormal
 - [x] c) construa uma função que calcule o ângulo entre dois vetores
 - [ ] d) construa uma função que calcule todas as normas (1, 2, infinito e a norma induzida por uma matriz positiva definida) de um vetor.
-- [ ] e) construa uma função que calcule o produto interno de dois vetores.
+- [x] e) construa uma função que calcule o produto interno de dois vetores.
 - [ ] f) construa uma função que calcule as normas (linha, coluna e de Frobenius) de uma matriz.
 
 ### Questão 3: Considerando o recebimento de um arquivo .xls contendo uma matriz A quadrada:
