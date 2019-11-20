@@ -25,7 +25,7 @@
 
 ### Questão 3: Considerando o recebimento de um arquivo .xls contendo uma matriz A quadrada:
 - [x] a) construa uma função retorne os autovalores da matriz
-- [ ] b) construa uma função que obtenha o determinante da matriz.
+- [x] b) construa uma função que obtenha o determinante da matriz.
 
 ### Questão 4: 
 - [x] a) construa uma função que implemente o método de Newton Raphson para um polinômio de Grau 10 cujos coeficientes sejam passados pelo usuário ou gerados de maneira randômica.
@@ -39,6 +39,6 @@ e compare com o seus resultados no item anterior.
 - [x] e) Plote os resultados obtidos em (d) colocando no mesmo gráfico os valores esperados
  
 ### Questão 6:
-- [ ] a) Construa uma função que implemente o método Naive Bayes
+- [x] a) Construa uma função que implemente o método Naive Bayes
 - [ ] b) Construa uma função que implemente o método de dendrogramação
 - [ ] c) Construa uma função que implemente o método de Erito Marques

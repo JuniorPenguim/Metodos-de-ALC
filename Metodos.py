@@ -674,6 +674,47 @@ class Questao3:
 
         print(autov)
 
+    def calcular_det(self):
+
+        matriz = self.matriz
+        print_matriz(matriz)
+
+        def determinant_recursivo(matriz, total=0):
+            # Guarda índices numa lista para referencia recursiva
+            indices = list(range(len(matriz)))
+
+            # Quando a matriz for uma 2x2, acaba a recursão e faz o calculo simples da det
+            if len(matriz) == 2 and len(matriz[0]) == 2:
+                val = matriz[0][0] * matriz[1][1] - matriz[1][0] * matriz[0][1]
+                return val
+
+            #define uma sub matriz
+            #elimina uma linha e os elementos de cada coluna desta linha
+            for fc in indices:
+
+                As = matriz[1:]
+                height = len(As)
+
+                for i in range(height):
+
+                    As[i] = As[i][0:fc] + As[i][fc + 1:]
+
+                sign = (-1) ** (fc % 2)  # F)
+
+                #faz o calculo da submatriz de forma recursiva
+
+                sub_det = determinant_recursivo(As)
+
+                #total armezanado da determinante sendo retornado
+
+                total += sign * matriz[0][fc] * sub_det
+
+            return total
+
+        determinante = determinant_recursivo(matriz, total=0)
+
+        print("A determinante da matriz é:",determinante)
+
 
 class Questao4:
     def __init__(self):
