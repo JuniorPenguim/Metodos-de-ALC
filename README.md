@@ -19,9 +19,9 @@
 - [x] a) construa uma função retorne o número de vetores recebidos e a média de cada linha.
 - [x] b) construa uma função que receba n vetores de dimensão n e encontre uma base ortonormal
 - [x] c) construa uma função que calcule o ângulo entre dois vetores
-- [ ] d) construa uma função que calcule todas as normas (1, 2, infinito e a norma induzida por uma matriz positiva definida) de um vetor.
+- [x] d) construa uma função que calcule todas as normas (1, 2, infinito e a norma induzida por uma matriz positiva definida) de um vetor.
 - [x] e) construa uma função que calcule o produto interno de dois vetores.
-- [ ] f) construa uma função que calcule as normas (linha, coluna e de Frobenius) de uma matriz.
+- [x] f) construa uma função que calcule as normas (linha, coluna e de Frobenius) de uma matriz.
 
 ### Questão 3: Considerando o recebimento de um arquivo .xls contendo uma matriz A quadrada:
 - [x] a) construa uma função retorne os autovalores da matriz
