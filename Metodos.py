@@ -734,6 +734,8 @@ class Questao4:
 class Questao5:
     def __init__(self):
 
+        self.vector = []
+        self.vetor_porcentagem = []
         self.matriz = carregar_matriz()
         self.vetor_b = carregar_vetorb()
 
@@ -743,7 +745,7 @@ class Questao5:
         letra = input("a) Construir uma função que substitua cada elemento da matriz pelo seu primeiro dígito.\n"
                       "b) Construir uma função que substitua cada elemento da matriz pelo seu segundo dígito\n"
                       "c) Construir uma função que calcule a estatística de Benford para cada dígito \n"
-                      "d) Plotar os resultados obtidos em (c) colocando no mesmo gráfico os valores esperados "
+                      "d) Plotar os resultados obtidos em (c) colocando no mesmo gráfico os valores esperados \n "
                       )
         if letra == 'a':
             self.sub_prim_elemento()
@@ -793,10 +795,65 @@ class Questao5:
         print_matriz(matrix_fim)
 
     def calcular_estat(self):
-        pass
+
+        matrix = self.matriz
+        vector = self.vector
+        vetor_porcentagem = self.vetor_porcentagem
+        total = 0
+        porcentagem = 0
+
+        for elemento in range(9):
+            vector.append(0)
+            vetor_porcentagem.append(0)
+
+        for linha in range(len(self.matriz)):
+            for coluna in range(len(self.matriz)):
+                total = total + 1
+                if (matrix[linha][coluna] == 1):
+                    vector[0] = vector[0] + 1
+                if (matrix[linha][coluna] == 2):
+                    vector[1] = vector[1] + 1
+                if (matrix[linha][coluna] == 3):
+                    vector[2] = vector[2] + 1
+                if (matrix[linha][coluna] == 4):
+                    vector[3] = vector[3] + 1
+                if (matrix[linha][coluna] == 5):
+                    vector[4] = vector[4] + 1
+                if (matrix[linha][coluna] == 6):
+                    vector[5] = vector[5] + 1
+                if (matrix[linha][coluna] == 7):
+                    vector[6] = vector[6] + 1
+                if (matrix[linha][coluna] == 8):
+                    vector[7] = vector[7] + 1
+                if (matrix[linha][coluna] == 9):
+                    vector[8] = vector[8] + 1
+
+        for elemento in range(9):
+            porcentagem = (vector[elemento] / total) * 100
+            # print('A porcentagem de números ', elemento, ' é de : ', porcentagem,'%')
+            vetor_porcentagem[elemento] = porcentagem
+            print('A porcentagem de números ', elemento, 'é de porcentagem  {:.2f}''%'.format(porcentagem))
+
+        self.vector = vector
+        self.vetor_porcentagem = vetor_porcentagem
 
     def plotar_result(self):
-        pass
+
+        self.calcular_estat()
+        vetor_porcentagem = self.vetor_porcentagem
+
+        vector_esperado = [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6]
+
+        x = np.arange(1,10)
+
+        plt.plot(x, vetor_porcentagem)
+        plt.plot(x, vector_esperado)
+        plt.legend(['Frequência Encontrada', 'Frequencia Benford'])
+        plt.grid(True)
+        plt.xlabel("Frequência para o 1º dígito")
+        plt.show()
+
+
 
 
 class Questao6:
