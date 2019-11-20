@@ -1,8 +1,11 @@
 import math
+import matplotlib.pyplot as plt
 import numpy as np
 from xlrd import *
 from random import *
 from numpy import linalg as la
+from scipy.stats import norm
+from sklearn.datasets.samples_generator import make_blobs
 
 seed(1)
 
@@ -787,7 +790,6 @@ class Questao5:
                 else:
                     matrix_fim[linha].append(int(aux[1]))
 
-
         print_matriz(matrix_fim)
 
     def calcular_estat(self):
@@ -813,264 +815,315 @@ class Questao6:
             self.calcular_angulo_vetores()
 
     def naive_bayes(self):
-        pass
-
-
-# MÉTODOS=>
-
-# zero das funções
-
-def bissecao(func, a, b, e):
-    while (abs(a - b) > e) and (abs(func((a + b) / 2)) > e):
-        x = (a + b)/2
-
-        print("f(x) =", func(x))
-        print("f(a) =", func(a))
-
-        if (func(x) * func(a)) < 0:
-            b = x
-        else:
-            a = x
-
-        print("x =", x)
-        print()
-        print("[a, b] =", [a, b])
-        print("|(", a, ") - (", b, ")| =", abs(a - b), ">", e)
-        print()
-        print("|f( ((", a, ") + (", b, ")) / 2 )| =", abs(func((a + b) / 2)), ">", e)
-
-    return x, [a, b]
-
-
-def falsaPosi(func, a, b, e):
-    def ER(x0, x1):
-        return abs(x0 - x1) / abs(x1)
-
-    i = 1
-    x = [0]
-    er = 1
-
-    while er > e:
-        p1 = (a * func(b))
-        p2 = (b * func(a))
-        p3 = p1 - p2
-        p4 = (func(b) - func(a))
-        p5 = p3 / p4
-
-        print("p1 = a * func(b) =", p1)
-        print("f(b) = ", func(b))
-        print("p2 = b * func(a) =", p2)
-        print("f(a) = ", func(a))
-        print("p3 = p1 - p2 =", p3)
-        print("p4 = func(b) - func(a) =", p4)
-        print("p5 = p3 / p4 =", p5)
-
-        x.append(p5)
-        print(x)
-        er = ER(x[i - 1], x[i])
-
-        if func(x) < 0:
-            a = x
-        else:
-            b = x
-
-        i += 1
-
-    return x
-
-
-# segunda ordem
-
-def tangentes(qtd, a, b, func, y0):
-    h = (b - a)/qtd
-    x = []
-    y = []
-    n = qtd+1
-
-    x.append(a)
-
-    for i in range(1, n):
-        x.append(x[i-1] + h)
-
-    y.append(y0)
-
-    for i in range(1, n):
-        y.append(y[i-1] + (h *func(y[i-1])))
-
-    # print(y)
-
-    return y
-
-
-def rungeKutta2(qtd, a, b, func, y0):
-    h = (b - a)/qtd
-    x = []
-    y = []
-    u = 0
-    n = qtd+1
-
-    x.append(a)
-
-    for i in range(1, n):
-        x.append(x[i-1] + h)
-
-    y.append(y0)
-
-    for i in range(1, n):
-        u = y[i-1] + (h * func(y[i-1]))
-        y.append(y[i-1] + ((h/2) * (func(y[i-1]) + func(u))))
-
-    # print(y)
-
-    return y
-
-
-def rungeKutta4(qtd, a, b, func, y0):
-    h = (b - a)/qtd
-    x = []
-    y = []
-    u = 0
-    n = qtd+1
-
-    x.append(a)
-
-    for i in range(1, n):
-        x.append(x[i-1] + h)
-
-    y.append(y0)
-
-    for i in range(1, n):
-        k1 = h * func(y[i-1])
-        k2 = h * func(y[i-1] + (k1/2))
-        k3 = h * func(y[i-1] + (k2/2))
-        k4 = h * func(y[i-1] + k3)
-        y.append(y[i-1] + ((1/6) * (k1 + (2*k2) + (2*k3) + k4)))
-
-    # print(y)
-
-    return y
-
-
-# integrais
-
-def simp38(qtd, a, b, func):
-    h = (b - a)/qtd
-    x = []
-    y = []
-    r = []
-    rT = 0
-    n = qtd+1
-
-    x.append(a)
-
-    for i in range(1, n):
-        x.append(x[i-1] + h)
-
-    # print(x)
-
-    for i in range(n):
-        y.append(func(x[i]))
-
-    # print(y)
-
-    for i in range(n):
-        if i == 0 or i == n-1:
-            c = 1
-        elif (i%3) == 0:
-            c = 2
-        else:
-            c = 3
-
-        r.append(c * y[i])
-        rT += r[i]
-        print(c, 'x', y[i], '=', r[i])
-        print(rT)
-
-
-    rT = (3 * h * rT) / 8
-
-    return rT
-
-
-def simp13(qtd, a, b, func):
-    h = (b - a)/qtd
-    x = []
-    y = []
-    r = []
-    rT = 0
-    n = qtd+1
-
-    x.append(a)
-
-    for i in range(1, n):
-        x.append(x[i-1] + h)
-
-    # print(x)
-
-    for i in range(n):
-        y.append(func(x[i]))
-
-    # print(y)
-
-    for i in range(n):
-        if i == 0 or i == n-1:
-            c = 1
-        elif (i%2) == 0:
-            c = 2
-        else:
-            c = 4
-
-        r.append(c * y[i])
-        rT += r[i]
-        print(c, 'x', y[i], '=', r[i])
-        print(rT)
-
-
-    rT = (h * rT) / 3
-
-    return rT
-
-
-def trapeziosComp(qtd, a, b, func):
-    h = (b - a)/qtd
-    x = []
-    y = []
-    r = []
-    rT = 0
-    n = qtd+1
-
-    x.append(a)
-
-    for i in range(1, n):
-        x.append(x[i-1] + h)
-
-    # print(x)
-
-    for i in range(n):
-        y.append(func(x[i]))
-
-    # print(y)
-
-    for i in range(n):
-        if i == 0 or i == n-1:
-            c = 1
-        else:
-            c = 2
-
-        r.append(c * y[i])
-        rT += r[i]
-        print(c, 'x', y[i], '=', r[i])
-        print(rT)
-
-
-    rT = (h * rT) / 2
-
-    return rT
-
-
-# MMQ
-def MMQ(x, y):
-    pass
+        # generate 2d classification dataset
+        X, y = make_blobs(n_samples=100, centers=2, n_features=2, random_state=1)
+        # summarize
+        print(X.shape, y.shape)
+        print(X[:5])
+        print(y[:5])
+
+        # sorteando os dados em classes
+        X_y0 = X[y == 0]
+        X_y1 = X[y == 1]
+        print(X_y0.shape, X_y1.shape)
+
+        # plt.scatter(X_y0[:, 0], X_y0[:, 1])
+        # plt.scatter(X_y1[:, 0], X_y1[:, 1])
+        # plt.show()
+
+        # calculate priors
+        priory0 = len(X_y0) / len(X)
+        priory1 = len(X_y1) / len(X)
+        print(priory0, priory1)
+
+        # cria PDFs para y==0
+        dist_X1y0 = self.fit_distribution(X_y0[:, 0])
+        dist_X2y0 = self.fit_distribution(X_y0[:, 1])
+        # cria PDFs para y==1
+        distX1y1 = self.fit_distribution(X_y1[:, 0])
+        distX2y1 = self.fit_distribution(X_y1[:, 1])
+
+        # classificar uma amostra
+        X_sample, y_sample = X[0], y[0]
+
+        # calcula a probabilidade de y == 0 na amostra X_sample
+        py0 = self.probabilidade(X_sample, priory0, dist_X1y0, dist_X2y0)
+        # calcula a probabilidade de y == 1 na amostra X_sample
+        py1 = self.probabilidade(X_sample, priory1, distX1y1, distX2y1)
+
+        print('P(y=0 | %s) = %.3f' % (X_sample, py0 * 100))
+        print('P(y=1 | %s) = %.3f' % (X_sample, py1 * 100))
+        print('Truth: y=%d' % y_sample)
+
+    def fit_distribution(self, data):
+        # estima parâmetros
+        media = np.mean(data)
+        desvio = np.std(data)
+        print(media, desvio)
+
+        # fit distribution
+        dist = norm(media, desvio)
+        return dist
+
+    def probabilidade(self, x, prior, dist1, dist2):
+        return prior * dist1.pdf(x[0]) * dist2.pdf(x[1])
+
+
+# # MÉTODOS=>
+#
+# # zero das funções
+#
+# def bissecao(func, a, b, e):
+#     while (abs(a - b) > e) and (abs(func((a + b) / 2)) > e):
+#         x = (a + b)/2
+#
+#         print("f(x) =", func(x))
+#         print("f(a) =", func(a))
+#
+#         if (func(x) * func(a)) < 0:
+#             b = x
+#         else:
+#             a = x
+#
+#         print("x =", x)
+#         print()
+#         print("[a, b] =", [a, b])
+#         print("|(", a, ") - (", b, ")| =", abs(a - b), ">", e)
+#         print()
+#         print("|f( ((", a, ") + (", b, ")) / 2 )| =", abs(func((a + b) / 2)), ">", e)
+#
+#     return x, [a, b]
+#
+#
+# def falsaPosi(func, a, b, e):
+#     def ER(x0, x1):
+#         return abs(x0 - x1) / abs(x1)
+#
+#     i = 1
+#     x = [0]
+#     er = 1
+#
+#     while er > e:
+#         p1 = (a * func(b))
+#         p2 = (b * func(a))
+#         p3 = p1 - p2
+#         p4 = (func(b) - func(a))
+#         p5 = p3 / p4
+#
+#         print("p1 = a * func(b) =", p1)
+#         print("f(b) = ", func(b))
+#         print("p2 = b * func(a) =", p2)
+#         print("f(a) = ", func(a))
+#         print("p3 = p1 - p2 =", p3)
+#         print("p4 = func(b) - func(a) =", p4)
+#         print("p5 = p3 / p4 =", p5)
+#
+#         x.append(p5)
+#         print(x)
+#         er = ER(x[i - 1], x[i])
+#
+#         if func(x) < 0:
+#             a = x
+#         else:
+#             b = x
+#
+#         i += 1
+#
+#     return x
+#
+#
+# # segunda ordem
+#
+# def tangentes(qtd, a, b, func, y0):
+#     h = (b - a)/qtd
+#     x = []
+#     y = []
+#     n = qtd+1
+#
+#     x.append(a)
+#
+#     for i in range(1, n):
+#         x.append(x[i-1] + h)
+#
+#     y.append(y0)
+#
+#     for i in range(1, n):
+#         y.append(y[i-1] + (h *func(y[i-1])))
+#
+#     # print(y)
+#
+#     return y
+#
+#
+# def rungeKutta2(qtd, a, b, func, y0):
+#     h = (b - a)/qtd
+#     x = []
+#     y = []
+#     u = 0
+#     n = qtd+1
+#
+#     x.append(a)
+#
+#     for i in range(1, n):
+#         x.append(x[i-1] + h)
+#
+#     y.append(y0)
+#
+#     for i in range(1, n):
+#         u = y[i-1] + (h * func(y[i-1]))
+#         y.append(y[i-1] + ((h/2) * (func(y[i-1]) + func(u))))
+#
+#     # print(y)
+#
+#     return y
+#
+#
+# def rungeKutta4(qtd, a, b, func, y0):
+#     h = (b - a)/qtd
+#     x = []
+#     y = []
+#     u = 0
+#     n = qtd+1
+#
+#     x.append(a)
+#
+#     for i in range(1, n):
+#         x.append(x[i-1] + h)
+#
+#     y.append(y0)
+#
+#     for i in range(1, n):
+#         k1 = h * func(y[i-1])
+#         k2 = h * func(y[i-1] + (k1/2))
+#         k3 = h * func(y[i-1] + (k2/2))
+#         k4 = h * func(y[i-1] + k3)
+#         y.append(y[i-1] + ((1/6) * (k1 + (2*k2) + (2*k3) + k4)))
+#
+#     # print(y)
+#
+#     return y
+#
+#
+# # integrais
+#
+# def simp38(qtd, a, b, func):
+#     h = (b - a)/qtd
+#     x = []
+#     y = []
+#     r = []
+#     rT = 0
+#     n = qtd+1
+#
+#     x.append(a)
+#
+#     for i in range(1, n):
+#         x.append(x[i-1] + h)
+#
+#     # print(x)
+#
+#     for i in range(n):
+#         y.append(func(x[i]))
+#
+#     # print(y)
+#
+#     for i in range(n):
+#         if i == 0 or i == n-1:
+#             c = 1
+#         elif (i%3) == 0:
+#             c = 2
+#         else:
+#             c = 3
+#
+#         r.append(c * y[i])
+#         rT += r[i]
+#         print(c, 'x', y[i], '=', r[i])
+#         print(rT)
+#
+#
+#     rT = (3 * h * rT) / 8
+#
+#     return rT
+#
+#
+# def simp13(qtd, a, b, func):
+#     h = (b - a)/qtd
+#     x = []
+#     y = []
+#     r = []
+#     rT = 0
+#     n = qtd+1
+#
+#     x.append(a)
+#
+#     for i in range(1, n):
+#         x.append(x[i-1] + h)
+#
+#     # print(x)
+#
+#     for i in range(n):
+#         y.append(func(x[i]))
+#
+#     # print(y)
+#
+#     for i in range(n):
+#         if i == 0 or i == n-1:
+#             c = 1
+#         elif (i%2) == 0:
+#             c = 2
+#         else:
+#             c = 4
+#
+#         r.append(c * y[i])
+#         rT += r[i]
+#         print(c, 'x', y[i], '=', r[i])
+#         print(rT)
+#
+#
+#     rT = (h * rT) / 3
+#
+#     return rT
+#
+#
+# def trapeziosComp(qtd, a, b, func):
+#     h = (b - a)/qtd
+#     x = []
+#     y = []
+#     r = []
+#     rT = 0
+#     n = qtd+1
+#
+#     x.append(a)
+#
+#     for i in range(1, n):
+#         x.append(x[i-1] + h)
+#
+#     # print(x)
+#
+#     for i in range(n):
+#         y.append(func(x[i]))
+#
+#     # print(y)
+#
+#     for i in range(n):
+#         if i == 0 or i == n-1:
+#             c = 1
+#         else:
+#             c = 2
+#
+#         r.append(c * y[i])
+#         rT += r[i]
+#         print(c, 'x', y[i], '=', r[i])
+#         print(rT)
+#
+#
+#     rT = (h * rT) / 2
+#
+#     return rT
+#
+#
+# # MMQ
+# def MMQ(x, y):
+#     pass
 
 
 def print_matriz(m):
