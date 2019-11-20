@@ -400,7 +400,7 @@ class Questao1:
             print()
         print()
 
-        # Número condição de A: fazer norma infinita de linha
+
         # Norma infinita de linha da matriz A
         maxA = 0
         for i in range(0, m, 1):
@@ -419,7 +419,7 @@ class Questao1:
             if maxAI < total:
                 maxAI = total
 
-        # Cálculo do número condição
+        # número condição
         num_cond = maxA * maxAI
         print('Número condição:', num_cond)
         print()
@@ -558,6 +558,9 @@ class Questao2:
     def __init__(self):
         self.vetores = carregar_vetores()
 
+        print(self.vetores)
+        print("")
+
         letra = input("a) Calcular o número de vetores recebidos e a média de cada linha.\n"
                       "b) Econtrar base ortonormal de n vetores de dimensão n.\n"
                       "c) Calcular o ângulo entre dois vetores.\n"
@@ -627,7 +630,38 @@ class Questao2:
         print("O ângulo entre os vetores {} e {} é de {} radianos".format(i1, i2, angulo))
 
     def calcular_normas_vetores(self):
-        pass
+
+        i1 = int(input("Escolha um vetor entre os 0-{} possíveis por número:".format(len(self.vetores) - 1)))
+        vet1 = np.array(self.vetores[i1])
+
+        def norma1_b(v):
+            n1b = 0
+            for i in range(len(v)):
+                n1b += math.fabs(vet1[i])
+            return n1b;
+
+        normaUm = norma1_b(vet1)
+
+        print("Norma 1 do vetor é:",normaUm)
+
+        def norma2_b(v):
+            n = 0
+            for i in range(len(v)):
+                n += (math.fabs(vet1[i])) * (math.fabs(vet1[i]))
+            return math.sqrt(n);
+
+        normaDois = norma2_b(vet1)
+        print("Norma 2 do vetor é:", round(normaDois, 2))
+
+        def normainf_b(v):
+            ninfb = math.fabs(v[0])
+            for i in range(len(v)):
+                if (math.fabs(v[i]) > ninfb):
+                    ninfb = (math.fabs(v[i]))
+            return ninfb
+
+        normaInfi = normainf_b(vet1)
+        print("Norma Infinita é:", normaInfi);
 
     def produto_interno_vetores(self):
         i1 = int(input("Escolha um vetor entre os 0-{} possíveis por número:".format(len(self.vetores) - 1)))
@@ -644,8 +678,57 @@ class Questao2:
         print("O produto interno entre os vetores {} e {} é de {}".format(i1, i2, soma))
 
     def calcular_normas_matriz(self):
-        pass
 
+        #normaM = la.norm(self.vetores, ord='fro')
+        #print(normaM)
+
+        def normafrob_a(a):
+            nFA = 0
+            for i in range(len(a)):
+                for j in range(len(a[0])):
+                    nFA += (math.fabs(a[i][j])) ** 2
+            nFA = math.sqrt(nFA)
+            return nFA
+
+            # normas matriciais (cont)
+
+
+        normaM = normafrob_a(self.vetores)
+        print(round(normaM, 2))
+
+        def norma_l(m):
+            aux = []
+
+
+            for i in range(len(m)):
+                somatorio = 0
+                for j in range(len(m[i])):
+                    somatorio += math.fabs(self.vetores[i][j])
+
+                aux.append(somatorio)
+
+
+            return max(aux)
+
+        normaL = norma_l(self.vetores)
+        print(normaL)
+
+        def norma_c(m):
+            aux = []
+
+
+            for j in range(len(m[0])):
+                somatorio = 0
+                for i in range(len(m)):
+                    somatorio += math.fabs(self.vetores[i][j])
+
+                aux.append(somatorio)
+
+
+            return max(aux)
+
+        normac = norma_c(self.vetores)
+        print(normac)
 
 class Questao3:
     def __init__(self):
