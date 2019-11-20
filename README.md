@@ -29,7 +29,7 @@
 
 ### Questão 4: 
 - [x] a) construa uma função que implemente o método de Newton Raphson para um polinômio de Grau 10 cujos coeficientes sejam passados pelo usuário ou gerados de maneira randômica.
-- [ ] b) construa uma função retorne as raízes de um polinômio do terceiro grau de maneira analítica
+- [x] b) construa uma função retorne as raízes de um polinômio do terceiro grau de maneira analítica
 e compare com o seus resultados no item anterior.
 
 ### Questão 5: Considerando o recebimento de um arquivo .xls contendo uma matriz qualquer.

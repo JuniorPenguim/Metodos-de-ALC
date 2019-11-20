@@ -815,7 +815,7 @@ class Questao4:
 
         def func(x):
             y = 0
-            ex = 10
+            ex = len(coeficientes)-1
             for c in coeficientes:
                 y += c*(x**ex)
                 ex -= 1
@@ -824,13 +824,16 @@ class Questao4:
 
         def der(x):
             y = 0
-            ex = 10
+            ex = len(coeficientes)-1
             for c in coeficientes:
                 if (ex - 1) >= 0:
                     y += (ex * c) * (x ** (ex - 1))
                 ex -= 1
 
             return y
+
+        def E(x0, x1, func):
+            return [abs(func(x1)), abs(x1 - x0)]
 
         coeficientes = []  # vetor contendo os coeficientes
         for i in range(11)[::-1]:
@@ -843,9 +846,6 @@ class Questao4:
 
         x0 = float(input("Digite o valor do x incial:"))  # substituir pelo velor do x inicial
         e = float(input("Digite o valor da tolerancia:"))
-
-        def E(x0, x1, func):
-            return [abs(func(x1)), abs(x1 - x0)]
 
         i = 0
         x = [x0]
@@ -865,7 +865,91 @@ class Questao4:
         return x
 
     def calcular_raizes(self):
-        pass
+        def func(x):
+            y = 0
+            ex = len(coeficientes)-1
+            for c in coeficientes:
+                y += c * (x ** ex)
+                ex -= 1
+
+            return y
+
+        def der(x):
+            y = 0
+            ex = len(coeficientes)-1
+            for c in coeficientes:
+                if (ex - 1) >= 0:
+                    y += (ex * c) * (x ** (ex - 1))
+                ex -= 1
+
+            return y
+
+        def E(x0, x1, func):
+            return [abs(func(x1)), abs(x1 - x0)]
+
+        coeficientes = []  # vetor contendo os coeficientes
+        for i in range(4)[::-1]:
+            coef = float(input("Digite o coeficiente para o x^{}:".format(i)))
+            coeficientes.append(coef)
+
+        possiveis_raizes = []
+        raizes_fracionarias = []
+        term_indep = int(coeficientes[-1])
+        for raiz in range(1, abs(term_indep) + 1):
+            if (abs(term_indep) % raiz) == 0:
+                possiveis_raizes.append(-raiz)
+                possiveis_raizes.append(raiz)
+                if raiz / coeficientes[0] not in possiveis_raizes:
+                    raizes_fracionarias.append((-raiz) / coeficientes[0])
+                    raizes_fracionarias.append(raiz / coeficientes[0])
+        possiveis_raizes.extend(raizes_fracionarias)
+        # print(possiveis_raizes)
+
+        raizes = []
+        for raiz in possiveis_raizes:
+            if func(raiz) == 0:
+                raizes.append(raiz)
+                break
+
+        raizes[0] = 1
+        # Briot Ruffini
+        termo = coeficientes[0] * raizes[0]
+        coef_d = [termo]
+        # print("{} = {} * {}".format(termo, raizes[0], termo / raizes[0]))
+        for i in range(1, len(coeficientes) - 1):
+            termo += coeficientes[i]
+            # print("{} = {} + {}".format(termo, termo - coeficientes[i], coeficientes[i]))
+            termo *= raizes[0]
+            # print("{} = {} * {}".format(termo, raizes[0], termo / raizes[0]))
+            coef_d.append(termo)
+
+        termo += coeficientes[-1]
+        # print("{} = {} + {}".format(termo, termo - coeficientes[-1], coeficientes[-1]))
+
+        # Baskara
+        raizes.append((-coef_d[1] - ((coef_d[1] ** 2) - (4 * coef_d[0] * coef_d[2])) ** (1 / 2)) / (2 * coef_d[0]))
+        raizes.append((-coef_d[1] + ((coef_d[1] ** 2) - (4 * coef_d[0] * coef_d[2])) ** (1 / 2)) / (2 * coef_d[0]))
+        print(raizes)
+
+        x0 = float(input("Digite o valor do x incial:"))  # substituir pelo velor do x inicial
+        e = float(input("Digite o valor da tolerancia:"))
+
+        i = 0
+        x = [x0]
+        er = [e + 1.0, e + 1.0]
+
+        while er[0] > e and er[1] > e:
+            p1 = func(x[i]) / der(x[i])
+            p2 = x[i] - p1
+
+            x.append(p2)
+            print(x[i])
+
+            er = E(x[i], x[i + 1], func)
+
+            i += 1
+
+        print("Raiz encontrada por Newton-Rhapson:", x[-1])
 
 
 class Questao5:
@@ -946,23 +1030,26 @@ class Questao5:
         for linha in range(len(self.matriz)):
             for coluna in range(len(self.matriz)):
                 total = total + 1
-                if (matrix[linha][coluna] == 1):
+                # for i in range(1, len(vector)+1):
+                #     if matrix[linha][coluna] == i:
+                #         vector[i-1] += 1
+                if matrix[linha][coluna] == 1:
                     vector[0] = vector[0] + 1
-                if (matrix[linha][coluna] == 2):
+                if matrix[linha][coluna] == 2:
                     vector[1] = vector[1] + 1
-                if (matrix[linha][coluna] == 3):
+                if matrix[linha][coluna] == 3:
                     vector[2] = vector[2] + 1
-                if (matrix[linha][coluna] == 4):
+                if matrix[linha][coluna] == 4:
                     vector[3] = vector[3] + 1
-                if (matrix[linha][coluna] == 5):
+                if matrix[linha][coluna] == 5:
                     vector[4] = vector[4] + 1
-                if (matrix[linha][coluna] == 6):
+                if matrix[linha][coluna] == 6:
                     vector[5] = vector[5] + 1
-                if (matrix[linha][coluna] == 7):
+                if matrix[linha][coluna] == 7:
                     vector[6] = vector[6] + 1
-                if (matrix[linha][coluna] == 8):
+                if matrix[linha][coluna] == 8:
                     vector[7] = vector[7] + 1
-                if (matrix[linha][coluna] == 9):
+                if matrix[linha][coluna] == 9:
                     vector[8] = vector[8] + 1
 
         for elemento in range(9):
@@ -989,8 +1076,6 @@ class Questao5:
         plt.grid(True)
         plt.xlabel("Frequência para o 1º dígito")
         plt.show()
-
-
 
 
 class Questao6:
