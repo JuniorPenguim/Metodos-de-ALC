@@ -596,7 +596,20 @@ class Questao2:
             print("media do {}º vetor = {};".format(m+1, medias[m]))
 
     def base_ortonormal(self):  # Gram-Schmidt
-        pass
+        vetores = np.array(self.vetores)
+        u_vet = [vetores[0] / la.norm(vetores[0])]
+
+        for k in range(1, len(vetores)):
+            proj = 0
+            for n in range(k):
+                proj += (np.dot(vetores[k], u_vet[n])) * u_vet[n]
+            y = vetores[k] - proj
+            u_vet.append(y/la.norm(y))
+
+        print("Encontrada a base ortonormal:")
+        for k in range(len(vetores)):
+            print(u_vet[k].tolist())
+        print()
 
     def calcular_angulo_vetores(self):
         i1 = int(input("Escolha um vetor entre os 0-{} possíveis por número:".format(len(self.vetores)-1)))

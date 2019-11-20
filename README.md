@@ -17,7 +17,7 @@
 
 ### Questão 2: Considerando o recebimento de um arquivo .xls contendo n vetores dispostos em linha:
 - [x] a) construa uma função retorne o número de vetores recebidos e a média de cada linha.
-- [ ] b) construa uma função que receba n vetores de dimensão n é encontre uma base ortonormal
+- [x] b) construa uma função que receba n vetores de dimensão n e encontre uma base ortonormal
 - [x] c) construa uma função que calcule o ângulo entre dois vetores
 - [ ] d) construa uma função que calcule todas as normas (1, 2, infinito e a norma induzida por uma matriz positiva definida) de um vetor.
 - [x] e) construa uma função que calcule o produto interno de dois vetores.
@@ -35,8 +35,8 @@ e compare com o seus resultados no item anterior.
 ### Questão 5: Considerando o recebimento de um arquivo .xls contendo uma matriz qualquer.
 - [x] b) Construa uma função que substitua cada elemento da matriz pelo seu primeiro dígito
 - [x] c) Construa uma função que substitua cada elemento da matriz pelo seu segundo dígito
-- [ ] d) Construa uma função que calcule a estatística de Benford para cada dígito
-- [ ] e) Plote os resultados obtidos em (d) colocando no mesmo gráfico os valores esperados
+- [x] d) Construa uma função que calcule a estatística de Benford para cada dígito
+- [x] e) Plote os resultados obtidos em (d) colocando no mesmo gráfico os valores esperados
  
 ### Questão 6:
 - [ ] a) Construa uma função que implemente o método Naive Bayes
