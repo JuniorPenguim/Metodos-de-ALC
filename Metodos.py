@@ -656,7 +656,6 @@ class Questao3:
         print_matriz(self.matriz)
         print_vetorb(self.vetor_b)
 
-
         letra = input("a) Calcular autovalores.\n"
                       "b) Calcular determinante.\n"
                       )
