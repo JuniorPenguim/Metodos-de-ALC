@@ -1,13 +1,11 @@
-import math
+from sklearn.datasets.samples_generator import make_blobs
 import matplotlib.pyplot as plt
-import numpy as np
-from xlrd import *
 from random import *
+import math
+import numpy as np
 from numpy import linalg as la
 from scipy.stats import norm
-from sklearn.datasets.samples_generator import make_blobs
-
-seed(1)
+from xlrd import *
 
 
 def carregar_matriz():
@@ -18,7 +16,7 @@ def carregar_matriz():
 
     for linha in range(planilha.nrows):
         matriz.append([])
-        for col in range(0, planilha.ncols -1):
+        for col in range(0, planilha.ncols - 1):
             matriz[linha].append(float(planilha.cell_value(linha, col)))
 
     return matriz
@@ -46,6 +44,19 @@ def carregar_vetores():
             vetores[vetor].append(float(planilha.cell_value(vetor, indice)))
 
     return vetores
+
+
+def print_matriz(m):
+    for i in range(len(m)):
+        for j in range(len(m[i])):
+            print("{0:.4f}  ".format(m[i][j]), end="")
+
+        print()
+
+
+def print_vetorb(v):
+    for i in range(len(v)):
+        print("{0:.4f}  ".format(v[i]))
 
 
 class Questao1:
@@ -125,29 +136,30 @@ class Questao1:
                 for j in range(len(self.matriz[i])):
                     self.fator_cholesky[i].append(0)
 
-            self.fator_cholesky[0][0] = self.matriz[0][0]**(1/2)  # R 1x1
+            self.fator_cholesky[0][0] = self.matriz[0][0] ** (1 / 2)  # R 1x1
 
             self.fator_cholesky[0][1:] = \
-                [self.matriz[0][j]/self.fator_cholesky[0][0] for j in range(1, len(self.matriz))]  # R 1xj j = 1...n
+                [self.matriz[0][j] / self.fator_cholesky[0][0] for j in range(1, len(self.matriz))]  # R 1xj j = 1...n
 
-            self.fator_cholesky[1][1] = (self.matriz[1][1]-(self.fator_cholesky[0][1]**2))**(1/2)  # R 2x2
+            self.fator_cholesky[1][1] = (self.matriz[1][1] - (self.fator_cholesky[0][1] ** 2)) ** (1 / 2)  # R 2x2
 
             self.fator_cholesky[1][2:] = \
-                [(self.matriz[1][j] - (self.fator_cholesky[0][1]*self.fator_cholesky[0][j])) / self.fator_cholesky[1][1]
+                [(self.matriz[1][j] - (self.fator_cholesky[0][1] * self.fator_cholesky[0][j])) / self.fator_cholesky[1][
+                    1]
                  for j in range(2, len(self.matriz))]  # R 2xj j = 3...n
 
             for i in range(2, len(self.matriz)):
                 soma = 0
                 for k in range(i):
-                    soma += self.fator_cholesky[k][i]**2
-                self.fator_cholesky[i][i] = (self.matriz[i][i] - soma)**(1/2)
+                    soma += self.fator_cholesky[k][i] ** 2
+                self.fator_cholesky[i][i] = (self.matriz[i][i] - soma) ** (1 / 2)
 
             for i in range(len(self.matriz)):
-                for j in range((i+1), len(self.matriz[i])):
+                for j in range((i + 1), len(self.matriz[i])):
                     soma = 0
                     for k in range(i):
-                        soma += self.fator_cholesky[k][i]*self.fator_cholesky[k][j]
-                    self.fator_cholesky[i][j] = (self.matriz[i][j] - soma)/self.fator_cholesky[i][i]
+                        soma += self.fator_cholesky[k][i] * self.fator_cholesky[k][j]
+                    self.fator_cholesky[i][j] = (self.matriz[i][j] - soma) / self.fator_cholesky[i][i]
             print_matriz(self.fator_cholesky)
         else:
             print("Não é possível calcular o Fator de Cholesky")
@@ -173,21 +185,21 @@ class Questao1:
                 matriz_u[0][j] = matriz[0][j]
 
             for i in range(1, len(matriz)):  # li0 = ai0/u10
-                matriz_l[i][0] = matriz[i][0]/matriz_u[0][0]
+                matriz_l[i][0] = matriz[i][0] / matriz_u[0][0]
 
             for k in range(1, len(matriz)):  # ukj = akj - soamatorio[0-(k-1), m](lkm * uml) k = 1..n
                 soma = 0
                 for j in range(k, len(matriz)):
-                    for m in range(k-1):
+                    for m in range(k - 1):
                         soma += matriz_l[k][m] * matriz_u[m][j]
                     matriz_u[k][j] = matriz[k][j] - soma
 
             for k in range(2, len(matriz)):  # lik = aik - soamatorio[0-(k-1), m](lim * umk) k = 2..n
                 soma = 0
-                for i in range(k+1, len(matriz)):
-                    for m in range(k-1):
+                for i in range(k + 1, len(matriz)):
+                    for m in range(k - 1):
                         soma += matriz_l[i][m] * matriz_u[m][k]
-                    matriz_l[i][k] = matriz_u[k][k]**(-1) * (matriz[i][k] - soma)
+                    matriz_l[i][k] = matriz_u[k][k] ** (-1) * (matriz[i][k] - soma)
 
             # print(np.array(matriz_l))
             # print(np.array(matriz_u))
@@ -308,7 +320,7 @@ class Questao1:
             k = k + 1
             for r in range(0, len(matrix)):
                 suma = 0
-                for c in range(0, len(matrix[r])-1):
+                for c in range(0, len(matrix[r]) - 1):
                     if c != r:
                         suma = suma + matrix[r][c] * x[c]
                 x[r] = (vetor_b[r] - suma) / matrix[r][r]
@@ -395,17 +407,17 @@ class Questao1:
         A_inversa = linalg.inv(matrix)
         print('Matriz A inversa:')
         for i in range(0, m):
-            for j in range(0, n-1):
+            for j in range(0, n - 1):
                 sys.stdout.write('%.2f\t' % A_inversa[i][j])
             print()
         print()
 
-
+        # Número condição de A: fazer norma infinita de linha
         # Norma infinita de linha da matriz A
         maxA = 0
         for i in range(0, m, 1):
             total = 0
-            for j in range(0, n-1, 1):
+            for j in range(0, n - 1, 1):
                 total += math.fabs(matrix[i][j])
             if maxA < total:
                 maxA = total
@@ -414,12 +426,12 @@ class Questao1:
         maxAI = 0
         for i in range(0, m, 1):
             total = 0
-            for j in range(0, n-1, 1):
+            for j in range(0, n - 1, 1):
                 total += math.fabs(A_inversa[i][j])
             if maxAI < total:
                 maxAI = total
 
-        # número condição
+        # Cálculo do número condição
         num_cond = maxA * maxAI
         print('Número condição:', num_cond)
         print()
@@ -559,7 +571,7 @@ class Questao2:
         self.vetores = carregar_vetores()
 
         print(self.vetores)
-        print("")
+        print()
 
         letra = input("a) Calcular o número de vetores recebidos e a média de cada linha.\n"
                       "b) Econtrar base ortonormal de n vetores de dimensão n.\n"
@@ -592,11 +604,11 @@ class Questao2:
             soma = 0
             for item in vetor:
                 soma += item
-            medias.append(soma/len(vetor))
+            medias.append(soma / len(vetor))
 
         print("Recebidos {} vetores.".format(cont))
         for m in range(len(medias)):
-            print("media do {}º vetor = {};".format(m+1, medias[m]))
+            print("media do {}º vetor = {};".format(m + 1, medias[m]))
 
     def base_ortonormal(self):  # Gram-Schmidt
         vetores = np.array(self.vetores)
@@ -607,7 +619,7 @@ class Questao2:
             for n in range(k):
                 proj += (np.dot(vetores[k], u_vet[n])) * u_vet[n]
             y = vetores[k] - proj
-            u_vet.append(y/la.norm(y))
+            u_vet.append(y / la.norm(y))
 
         print("Encontrada a base ortonormal:")
         for k in range(len(vetores)):
@@ -615,7 +627,7 @@ class Questao2:
         print()
 
     def calcular_angulo_vetores(self):
-        i1 = int(input("Escolha um vetor entre os 0-{} possíveis por número:".format(len(self.vetores)-1)))
+        i1 = int(input("Escolha um vetor entre os 0-{} possíveis por número:".format(len(self.vetores) - 1)))
         i2 = int(input("Escolha um segundo vetor:"))
         vet1 = np.array(self.vetores[i1])
         vet2 = np.array(self.vetores[i2])
@@ -625,7 +637,7 @@ class Questao2:
         # print("||x|| =", la.norm(vet1))
         # print("||y|| =", la.norm(vet2))
 
-        angulo = np.arccos(np.dot(vet1, vet2)/(la.norm(vet1)*la.norm(vet2)))
+        angulo = np.arccos(np.dot(vet1, vet2) / (la.norm(vet1) * la.norm(vet2)))
 
         print("O ângulo entre os vetores {} e {} é de {} radianos".format(i1, i2, angulo))
 
@@ -638,30 +650,30 @@ class Questao2:
             n1b = 0
             for i in range(len(v)):
                 n1b += math.fabs(vet1[i])
-            return n1b;
+            return n1b
 
-        normaUm = norma1_b(vet1)
+        norma_um = norma1_b(vet1)
 
-        print("Norma 1 do vetor é:",normaUm)
+        print("Norma 1 do vetor é:", norma_um)
 
         def norma2_b(v):
             n = 0
             for i in range(len(v)):
                 n += (math.fabs(vet1[i])) * (math.fabs(vet1[i]))
-            return math.sqrt(n);
+            return math.sqrt(n)
 
-        normaDois = norma2_b(vet1)
-        print("Norma 2 do vetor é:", round(normaDois, 2))
+        norma_dois = norma2_b(vet1)
+        print("Norma 2 do vetor é:", round(norma_dois, 2))
 
-        def normainf_b(v):
+        def norma_inf_b(v):
             ninfb = math.fabs(v[0])
             for i in range(len(v)):
-                if (math.fabs(v[i]) > ninfb):
+                if math.fabs(v[i]) > ninfb:
                     ninfb = (math.fabs(v[i]))
             return ninfb
 
-        normaInfi = normainf_b(vet1)
-        print("Norma Infinita é:", normaInfi);
+        norma_inf_i = norma_inf_b(vet1)
+        print("Norma Infinita é:", norma_inf_i)
 
     def produto_interno_vetores(self):
         i1 = int(input("Escolha um vetor entre os 0-{} possíveis por número:".format(len(self.vetores) - 1)))
@@ -679,65 +691,52 @@ class Questao2:
 
     def calcular_normas_matriz(self):
 
-        #normaM = la.norm(self.vetores, ord='fro')
-        #print(normaM)
-
-        def normafrob_a(a):
-            nFA = 0
+        def norma_frob_a(a):
+            n_fa = 0
             for i in range(len(a)):
                 for j in range(len(a[0])):
-                    nFA += (math.fabs(a[i][j])) ** 2
-            nFA = math.sqrt(nFA)
-            return nFA
+                    n_fa += (math.fabs(a[i][j])) ** 2
+            n_fa = math.sqrt(n_fa)
+            return n_fa
 
             # normas matriciais (cont)
 
-
-        normaM = normafrob_a(self.vetores)
-        print(round(normaM, 2))
+        norma_m = norma_frob_a(self.vetores)
+        print(round(norma_m, 2))
 
         def norma_l(m):
             aux = []
-
 
             for i in range(len(m)):
                 somatorio = 0
                 for j in range(len(m[i])):
                     somatorio += math.fabs(self.vetores[i][j])
-
                 aux.append(somatorio)
-
 
             return max(aux)
 
-        normaL = norma_l(self.vetores)
-        print(normaL)
+        norma_l = norma_l(self.vetores)
+        print(norma_l)
 
         def norma_c(m):
             aux = []
-
 
             for j in range(len(m[0])):
                 somatorio = 0
                 for i in range(len(m)):
                     somatorio += math.fabs(self.vetores[i][j])
-
                 aux.append(somatorio)
-
 
             return max(aux)
 
-        normac = norma_c(self.vetores)
-        print(normac)
+        norma_c = norma_c(self.vetores)
+        print(norma_c)
+
 
 class Questao3:
     def __init__(self):
-
-        self.matriz = carregar_matriz()
-        self.vetor_b = carregar_vetorb()
-
+        self.matriz = carregar_vetores()
         print_matriz(self.matriz)
-        print_vetorb(self.vetor_b)
 
         letra = input("a) Calcular autovalores.\n"
                       "b) Calcular determinante.\n"
@@ -750,9 +749,7 @@ class Questao3:
     def autovalores(self):
 
         matrix = self.matriz
-        autov = []
-
-        autov = LA.eigvals(matrix)
+        autov = la.eigvals(matrix)
 
         print(autov)
 
@@ -770,24 +767,23 @@ class Questao3:
                 val = matriz[0][0] * matriz[1][1] - matriz[1][0] * matriz[0][1]
                 return val
 
-            #define uma sub matriz
-            #elimina uma linha e os elementos de cada coluna desta linha
+            # define uma sub matriz
+            # elimina uma linha e os elementos de cada coluna desta linha
             for fc in indices:
 
                 As = matriz[1:]
                 height = len(As)
 
                 for i in range(height):
-
                     As[i] = As[i][0:fc] + As[i][fc + 1:]
 
                 sign = (-1) ** (fc % 2)  # F)
 
-                #faz o calculo da submatriz de forma recursiva
+                # faz o calculo da submatriz de forma recursiva
 
                 sub_det = determinant_recursivo(As)
 
-                #total armezanado da determinante sendo retornado
+                # total armezanado da determinante sendo retornado
 
                 total += sign * matriz[0][fc] * sub_det
 
@@ -795,13 +791,11 @@ class Questao3:
 
         determinante = determinant_recursivo(matriz, total=0)
 
-        print("A determinante da matriz é:",determinante)
+        print("A determinante da matriz é:", determinante)
 
 
 class Questao4:
     def __init__(self):
-        self.matriz = carregar_vetores()
-
         letra = input("a) Calcular Newton Rhapson para um polinômio de grau 10.\n"
                       "b) Comparar raizes analíticas com Newton Rhapson.\n"
                       )
@@ -811,28 +805,6 @@ class Questao4:
             self.calcular_raizes()
 
     def calcular_newton_rapshon(self):
-
-        def func(x):
-            y = 0
-            ex = len(coeficientes)-1
-            for c in coeficientes:
-                y += c*(x**ex)
-                ex -= 1
-
-            return y
-
-        def der(x):
-            y = 0
-            ex = len(coeficientes)-1
-            for c in coeficientes:
-                if (ex - 1) >= 0:
-                    y += (ex * c) * (x ** (ex - 1))
-                ex -= 1
-
-            return y
-
-        def E(x0, x1, func):
-            return [abs(func(x1)), abs(x1 - x0)]
 
         coeficientes = []  # vetor contendo os coeficientes
         for i in range(11)[::-1]:
@@ -851,40 +823,19 @@ class Questao4:
         er = [e + 1.0, e + 1.0]
 
         while er[0] > e and er[1] > e:
-            p1 = func(x[i]) / der(x[i])
+            p1 = self.func(x[i], coeficientes) / self.der(x[i], coeficientes)
             p2 = x[i] - p1
 
             x.append(p2)
             print(x[i])
 
-            er = E(x[i], x[i + 1], func)
+            er = self.E(x[i], x[i + 1], self.func)
 
             i += 1
 
         return x
 
     def calcular_raizes(self):
-        def func(x):
-            y = 0
-            ex = len(coeficientes)-1
-            for c in coeficientes:
-                y += c * (x ** ex)
-                ex -= 1
-
-            return y
-
-        def der(x):
-            y = 0
-            ex = len(coeficientes)-1
-            for c in coeficientes:
-                if (ex - 1) >= 0:
-                    y += (ex * c) * (x ** (ex - 1))
-                ex -= 1
-
-            return y
-
-        def E(x0, x1, func):
-            return [abs(func(x1)), abs(x1 - x0)]
 
         coeficientes = []  # vetor contendo os coeficientes
         for i in range(4)[::-1]:
@@ -906,29 +857,31 @@ class Questao4:
 
         raizes = []
         for raiz in possiveis_raizes:
-            if func(raiz) == 0:
+            if self.func(raiz, coeficientes) == 0:
                 raizes.append(raiz)
                 break
+        if raizes:
 
-        raizes[0] = 1
-        # Briot Ruffini
-        termo = coeficientes[0] * raizes[0]
-        coef_d = [termo]
-        # print("{} = {} * {}".format(termo, raizes[0], termo / raizes[0]))
-        for i in range(1, len(coeficientes) - 1):
-            termo += coeficientes[i]
-            # print("{} = {} + {}".format(termo, termo - coeficientes[i], coeficientes[i]))
-            termo *= raizes[0]
+            # Briot Ruffini
+            termo = coeficientes[0] * raizes[0]
+            coef_d = [termo]
             # print("{} = {} * {}".format(termo, raizes[0], termo / raizes[0]))
-            coef_d.append(termo)
+            for i in range(1, len(coeficientes) - 1):
+                termo += coeficientes[i]
+                # print("{} = {} + {}".format(termo, termo - coeficientes[i], coeficientes[i]))
+                termo *= raizes[0]
+                # print("{} = {} * {}".format(termo, raizes[0], termo / raizes[0]))
+                coef_d.append(termo)
 
-        termo += coeficientes[-1]
-        # print("{} = {} + {}".format(termo, termo - coeficientes[-1], coeficientes[-1]))
+            termo += coeficientes[-1]
+            # print("{} = {} + {}".format(termo, termo - coeficientes[-1], coeficientes[-1]))
 
-        # Baskara
-        raizes.append((-coef_d[1] - ((coef_d[1] ** 2) - (4 * coef_d[0] * coef_d[2])) ** (1 / 2)) / (2 * coef_d[0]))
-        raizes.append((-coef_d[1] + ((coef_d[1] ** 2) - (4 * coef_d[0] * coef_d[2])) ** (1 / 2)) / (2 * coef_d[0]))
-        print(raizes)
+            # Baskara
+            raizes.append((-coef_d[1] - ((coef_d[1] ** 2) - (4 * coef_d[0] * coef_d[2])) ** (1 / 2)) / (2 * coef_d[0]))
+            raizes.append((-coef_d[1] + ((coef_d[1] ** 2) - (4 * coef_d[0] * coef_d[2])) ** (1 / 2)) / (2 * coef_d[0]))
+            print(raizes)
+        else:
+            print("Não encontrada solução analítica.")
 
         x0 = float(input("Digite o valor do x incial:"))  # substituir pelo velor do x inicial
         e = float(input("Digite o valor da tolerancia:"))
@@ -938,17 +891,39 @@ class Questao4:
         er = [e + 1.0, e + 1.0]
 
         while er[0] > e and er[1] > e:
-            p1 = func(x[i]) / der(x[i])
+            p1 = self.func(x[i], coeficientes) / self.der(x[i], coeficientes)
             p2 = x[i] - p1
 
             x.append(p2)
             print(x[i])
 
-            er = E(x[i], x[i + 1], func)
+            er = self.E(x[i], x[i + 1], self.func)
 
             i += 1
 
         print("Raiz encontrada por Newton-Rhapson:", x[-1])
+
+    def func(self, x, coeficientes):
+        y = 0
+        ex = len(coeficientes) - 1
+        for c in coeficientes:
+            y += c * (x ** ex)
+            ex -= 1
+
+        return y
+
+    def der(self, x, coeficientes):
+        y = 0
+        ex = len(coeficientes) - 1
+        for c in coeficientes:
+            if (ex - 1) >= 0:
+                y += (ex * c) * (x ** (ex - 1))
+            ex -= 1
+
+        return y
+
+    def E(self, x0, x1, func):
+        return [abs(func(x1)), abs(x1 - x0)]
 
 
 class Questao5:
@@ -977,35 +952,25 @@ class Questao5:
             self.plotar_result()
 
     def sub_prim_elemento(self):
-
-        arquivo = 'planilha.xlsx'
-        planilha = open_workbook(arquivo).sheet_by_index(0)
-
         matrix = self.matriz
 
         matrix_fim = []
 
-        for linha in range(planilha.nrows):
+        for linha in range(len(matrix)):
             matrix_fim.append([])
-            for coluna in range(planilha.ncols-1):
+            for coluna in range(len(matrix[linha])):
                 aux = str(matrix[linha][coluna])
                 matrix_fim[linha].append(int(aux[0]))
-
 
         print_matriz(matrix_fim)
 
     def sub_seg_elemento(self):
-
-        arquivo = 'planilha.xlsx'
-        planilha = open_workbook(arquivo).sheet_by_index(0)
-
         matrix = self.matriz
-
         matrix_fim = []
 
-        for linha in range(planilha.nrows):
+        for linha in range(len(matrix)):
             matrix_fim.append([])
-            for coluna in range(planilha.ncols - 1):
+            for coluna in range(len(matrix[linha])):
                 aux = str(matrix[linha][coluna])
                 if aux[1] == '.':
                     matrix_fim[linha].append(int(aux[0]))
@@ -1020,7 +985,6 @@ class Questao5:
         vector = self.vector
         vetor_porcentagem = self.vetor_porcentagem
         total = 0
-        porcentagem = 0
 
         for elemento in range(9):
             vector.append(0)
@@ -1067,7 +1031,7 @@ class Questao5:
 
         vector_esperado = [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6]
 
-        x = np.arange(1,10)
+        x = np.arange(1, 10)
 
         plt.plot(x, vetor_porcentagem)
         plt.plot(x, vector_esperado)
@@ -1079,8 +1043,6 @@ class Questao5:
 
 class Questao6:
     def __init__(self):
-        self.matriz = carregar_vetores()
-
         letra = input("a) Calcular Naive Bayes.\n"
                       "b) Calcular Dendrogramação.\n"
                       "c) Calcular método de Érito Marques.\n"
@@ -1088,9 +1050,9 @@ class Questao6:
         if letra == 'a':
             self.naive_bayes()
         elif letra == 'b':
-            self.base_ortonormal()
+            print("Não ficou pronto")
         elif letra == 'c':
-            self.calcular_angulo_vetores()
+            print("Não ficou pronto")
 
     def naive_bayes(self):
         # generate 2d classification dataset
@@ -1122,16 +1084,16 @@ class Questao6:
         distX2y1 = self.fit_distribution(X_y1[:, 1])
 
         # classificar uma amostra
-        X_sample, y_sample = X[0], y[0]
+        amostra_X, amostra_y = X[0], y[0]
 
-        # calcula a probabilidade de y == 0 na amostra X_sample
-        py0 = self.probabilidade(X_sample, priory0, dist_X1y0, dist_X2y0)
-        # calcula a probabilidade de y == 1 na amostra X_sample
-        py1 = self.probabilidade(X_sample, priory1, distX1y1, distX2y1)
+        # calcula a probabilidade de y == 0 na amostra amostra_X
+        py0 = self.probabilidade(amostra_X, priory0, dist_X1y0, dist_X2y0)
+        # calcula a probabilidade de y == 1 na amostra amostra_X
+        py1 = self.probabilidade(amostra_X, priory1, distX1y1, distX2y1)
 
-        print('P(y=0 | %s) = %.3f' % (X_sample, py0 * 100))
-        print('P(y=1 | %s) = %.3f' % (X_sample, py1 * 100))
-        print('Truth: y=%d' % y_sample)
+        print('P(y=0 | {}) = {}'.format(amostra_X, py0 * 100))
+        print('P(y=1 | {}) = {}'.format(amostra_X, py1 * 100))
+        print('Truth: y = {}'.format(amostra_y))
 
     def fit_distribution(self, data):
         # estima parâmetros
@@ -1145,276 +1107,6 @@ class Questao6:
 
     def probabilidade(self, x, prior, dist1, dist2):
         return prior * dist1.pdf(x[0]) * dist2.pdf(x[1])
-
-
-# # MÉTODOS=>
-#
-# # zero das funções
-#
-# def bissecao(func, a, b, e):
-#     while (abs(a - b) > e) and (abs(func((a + b) / 2)) > e):
-#         x = (a + b)/2
-#
-#         print("f(x) =", func(x))
-#         print("f(a) =", func(a))
-#
-#         if (func(x) * func(a)) < 0:
-#             b = x
-#         else:
-#             a = x
-#
-#         print("x =", x)
-#         print()
-#         print("[a, b] =", [a, b])
-#         print("|(", a, ") - (", b, ")| =", abs(a - b), ">", e)
-#         print()
-#         print("|f( ((", a, ") + (", b, ")) / 2 )| =", abs(func((a + b) / 2)), ">", e)
-#
-#     return x, [a, b]
-#
-#
-# def falsaPosi(func, a, b, e):
-#     def ER(x0, x1):
-#         return abs(x0 - x1) / abs(x1)
-#
-#     i = 1
-#     x = [0]
-#     er = 1
-#
-#     while er > e:
-#         p1 = (a * func(b))
-#         p2 = (b * func(a))
-#         p3 = p1 - p2
-#         p4 = (func(b) - func(a))
-#         p5 = p3 / p4
-#
-#         print("p1 = a * func(b) =", p1)
-#         print("f(b) = ", func(b))
-#         print("p2 = b * func(a) =", p2)
-#         print("f(a) = ", func(a))
-#         print("p3 = p1 - p2 =", p3)
-#         print("p4 = func(b) - func(a) =", p4)
-#         print("p5 = p3 / p4 =", p5)
-#
-#         x.append(p5)
-#         print(x)
-#         er = ER(x[i - 1], x[i])
-#
-#         if func(x) < 0:
-#             a = x
-#         else:
-#             b = x
-#
-#         i += 1
-#
-#     return x
-#
-#
-# # segunda ordem
-#
-# def tangentes(qtd, a, b, func, y0):
-#     h = (b - a)/qtd
-#     x = []
-#     y = []
-#     n = qtd+1
-#
-#     x.append(a)
-#
-#     for i in range(1, n):
-#         x.append(x[i-1] + h)
-#
-#     y.append(y0)
-#
-#     for i in range(1, n):
-#         y.append(y[i-1] + (h *func(y[i-1])))
-#
-#     # print(y)
-#
-#     return y
-#
-#
-# def rungeKutta2(qtd, a, b, func, y0):
-#     h = (b - a)/qtd
-#     x = []
-#     y = []
-#     u = 0
-#     n = qtd+1
-#
-#     x.append(a)
-#
-#     for i in range(1, n):
-#         x.append(x[i-1] + h)
-#
-#     y.append(y0)
-#
-#     for i in range(1, n):
-#         u = y[i-1] + (h * func(y[i-1]))
-#         y.append(y[i-1] + ((h/2) * (func(y[i-1]) + func(u))))
-#
-#     # print(y)
-#
-#     return y
-#
-#
-# def rungeKutta4(qtd, a, b, func, y0):
-#     h = (b - a)/qtd
-#     x = []
-#     y = []
-#     u = 0
-#     n = qtd+1
-#
-#     x.append(a)
-#
-#     for i in range(1, n):
-#         x.append(x[i-1] + h)
-#
-#     y.append(y0)
-#
-#     for i in range(1, n):
-#         k1 = h * func(y[i-1])
-#         k2 = h * func(y[i-1] + (k1/2))
-#         k3 = h * func(y[i-1] + (k2/2))
-#         k4 = h * func(y[i-1] + k3)
-#         y.append(y[i-1] + ((1/6) * (k1 + (2*k2) + (2*k3) + k4)))
-#
-#     # print(y)
-#
-#     return y
-#
-#
-# # integrais
-#
-# def simp38(qtd, a, b, func):
-#     h = (b - a)/qtd
-#     x = []
-#     y = []
-#     r = []
-#     rT = 0
-#     n = qtd+1
-#
-#     x.append(a)
-#
-#     for i in range(1, n):
-#         x.append(x[i-1] + h)
-#
-#     # print(x)
-#
-#     for i in range(n):
-#         y.append(func(x[i]))
-#
-#     # print(y)
-#
-#     for i in range(n):
-#         if i == 0 or i == n-1:
-#             c = 1
-#         elif (i%3) == 0:
-#             c = 2
-#         else:
-#             c = 3
-#
-#         r.append(c * y[i])
-#         rT += r[i]
-#         print(c, 'x', y[i], '=', r[i])
-#         print(rT)
-#
-#
-#     rT = (3 * h * rT) / 8
-#
-#     return rT
-#
-#
-# def simp13(qtd, a, b, func):
-#     h = (b - a)/qtd
-#     x = []
-#     y = []
-#     r = []
-#     rT = 0
-#     n = qtd+1
-#
-#     x.append(a)
-#
-#     for i in range(1, n):
-#         x.append(x[i-1] + h)
-#
-#     # print(x)
-#
-#     for i in range(n):
-#         y.append(func(x[i]))
-#
-#     # print(y)
-#
-#     for i in range(n):
-#         if i == 0 or i == n-1:
-#             c = 1
-#         elif (i%2) == 0:
-#             c = 2
-#         else:
-#             c = 4
-#
-#         r.append(c * y[i])
-#         rT += r[i]
-#         print(c, 'x', y[i], '=', r[i])
-#         print(rT)
-#
-#
-#     rT = (h * rT) / 3
-#
-#     return rT
-#
-#
-# def trapeziosComp(qtd, a, b, func):
-#     h = (b - a)/qtd
-#     x = []
-#     y = []
-#     r = []
-#     rT = 0
-#     n = qtd+1
-#
-#     x.append(a)
-#
-#     for i in range(1, n):
-#         x.append(x[i-1] + h)
-#
-#     # print(x)
-#
-#     for i in range(n):
-#         y.append(func(x[i]))
-#
-#     # print(y)
-#
-#     for i in range(n):
-#         if i == 0 or i == n-1:
-#             c = 1
-#         else:
-#             c = 2
-#
-#         r.append(c * y[i])
-#         rT += r[i]
-#         print(c, 'x', y[i], '=', r[i])
-#         print(rT)
-#
-#
-#     rT = (h * rT) / 2
-#
-#     return rT
-#
-#
-# # MMQ
-# def MMQ(x, y):
-#     pass
-
-
-def print_matriz(m):
-    for i in range(len(m)):
-        for j in range(len(m[i])):
-            print("{0:.4f}  ".format(m[i][j]), end="")
-
-        print()
-
-
-def print_vetorb(v):
-    for i in range(len(v)):
-        print("{0:.4f}  ".format(v[i]))
 
 
 questao = input("Questão 1).\n"
