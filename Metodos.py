@@ -1,16 +1,15 @@
-from sklearn.datasets.samples_generator import make_blobs
-import matplotlib.pyplot as plt
-from random import *
 import math
+import matplotlib.pyplot as plt
 import numpy as np
+from xlrd import *
+from random import *
 from numpy import linalg as la
 from scipy.stats import norm
-from xlrd import *
+from sklearn.datasets.samples_generator import make_blobs
 
 
-def carregar_matriz():
+def carregar_matriz(arquivo):
     # arquivo = input("Digite o nome do arquivo com extensão:")
-    arquivo = 'planilha.xlsx'
     planilha = open_workbook(arquivo).sheet_by_index(0)
     matriz = []
 
@@ -22,8 +21,7 @@ def carregar_matriz():
     return matriz
 
 
-def carregar_vetorb():
-    arquivo = 'planilha.xlsx'
+def carregar_vetorb(arquivo):
     planilha = open_workbook(arquivo).sheet_by_index(0)
     vetor_b = []
 
@@ -33,8 +31,7 @@ def carregar_vetorb():
     return vetor_b
 
 
-def carregar_vetores():
-    arquivo = 'planilha.xlsx'
+def carregar_vetores(arquivo):
     planilha = open_workbook(arquivo).sheet_by_index(0)
     vetores = []
 
@@ -54,6 +51,15 @@ def print_matriz(m):
         print()
 
 
+def print_vetores(m):
+    for i in range(len(m)):
+        print("v[{}]: ".format(i), end="")
+        for j in range(len(m[i])):
+            print("{} ".format(m[i][j]), end="")
+
+        print()
+
+
 def print_vetorb(v):
     for i in range(len(v)):
         print("{0:.4f}  ".format(v[i]))
@@ -61,14 +67,12 @@ def print_vetorb(v):
 
 class Questao1:
     def __init__(self):
-        self.matriz = carregar_matriz()
-        self.vetor_b = carregar_vetorb()
+        self.matriz = []
+        self.vetor_b = []
         self.fator_cholesky = []
         self.matriz_l = []
         self.matriz_u = []
 
-        print_matriz(self.matriz)
-        print_vetorb(self.vetor_b)
         letra = input("a) Avaliar se é triangular superior, inferior, diagonal ou nenhuma das três.\n"
                       "b) Calcular o fator de Cholesky.\n"
                       "c) Construir matrizes L e U.\n"
@@ -81,6 +85,7 @@ class Questao1:
                       "k) Fatoração QR.\n"
                       "l) Calcular número condição.\n"
                       "m) Gradiente conjugado.\n"
+                      "n) Roda TUDO.\n"
                       )
         if letra == 'a':
             self.identificar_matriz()
@@ -106,8 +111,14 @@ class Questao1:
             self.num_condicao()
         elif letra == 'm':
             pass
+        elif letra == 'n':
+            self.chamar_tudo()
 
     def identificar_matriz(self):
+        self.matriz = carregar_vetores('planilha-1a.xlsx')
+        print_matriz(self.matriz)
+        print()
+
         superior = self.is_triangular_superior()
         inferior = self.is_triangular_inferior()
         diagonal = self.is_diagonal()
@@ -129,6 +140,11 @@ class Questao1:
         print("A matriz A {}, {}, {}.".format(superior, inferior, diagonal))
 
     def calcular_fator_cholesky(self):
+        self.matriz = carregar_matriz('planilha-1b.xlsx')
+        print("Cholesky:\n")
+        print_matriz(self.matriz)
+        print()
+
         positiva_definida = self.is_positiva_definida()
         if positiva_definida:
             for i in range(len(self.matriz)):
@@ -136,17 +152,17 @@ class Questao1:
                 for j in range(len(self.matriz[i])):
                     self.fator_cholesky[i].append(0)
 
-            self.fator_cholesky[0][0] = self.matriz[0][0] ** (1 / 2)  # R 1x1
+            self.fator_cholesky[0][0] = self.matriz[0][0] ** (1 / 2)  # R 0x0
 
             self.fator_cholesky[0][1:] = \
-                [self.matriz[0][j] / self.fator_cholesky[0][0] for j in range(1, len(self.matriz))]  # R 1xj j = 1...n
+                [self.matriz[0][j] / self.fator_cholesky[0][0] for j in range(1, len(self.matriz))]  # R 0xj j = 0...n
 
-            self.fator_cholesky[1][1] = (self.matriz[1][1] - (self.fator_cholesky[0][1] ** 2)) ** (1 / 2)  # R 2x2
+            self.fator_cholesky[1][1] = (self.matriz[1][1] - (self.fator_cholesky[0][1] ** 2)) ** (1 / 2)  # R 1x1
 
             self.fator_cholesky[1][2:] = \
                 [(self.matriz[1][j] - (self.fator_cholesky[0][1] * self.fator_cholesky[0][j])) / self.fator_cholesky[1][
                     1]
-                 for j in range(2, len(self.matriz))]  # R 2xj j = 3...n
+                 for j in range(2, len(self.matriz))]  # R 1xj j = 2...n
 
             for i in range(2, len(self.matriz)):
                 soma = 0
@@ -154,17 +170,23 @@ class Questao1:
                     soma += self.fator_cholesky[k][i] ** 2
                 self.fator_cholesky[i][i] = (self.matriz[i][i] - soma) ** (1 / 2)
 
-            for i in range(len(self.matriz)):
                 for j in range((i + 1), len(self.matriz[i])):
                     soma = 0
                     for k in range(i):
                         soma += self.fator_cholesky[k][i] * self.fator_cholesky[k][j]
                     self.fator_cholesky[i][j] = (self.matriz[i][j] - soma) / self.fator_cholesky[i][i]
+
+            print("Fator de Cholesky:")
             print_matriz(self.fator_cholesky)
+            print()
         else:
             print("Não é possível calcular o Fator de Cholesky")
 
     def lu(self):
+        self.matriz = carregar_matriz('planilha-1c.xlsx')
+        print_matriz(self.matriz)
+        print()
+
         if self.verificar_det_submatrizes():
 
             matriz = np.array(self.matriz)
@@ -187,22 +209,27 @@ class Questao1:
             for i in range(1, len(matriz)):  # li0 = ai0/u10
                 matriz_l[i][0] = matriz[i][0] / matriz_u[0][0]
 
-            for k in range(1, len(matriz)):  # ukj = akj - soamatorio[0-(k-1), m](lkm * uml) k = 1..n
-                soma = 0
+            for k in range(1, len(matriz)):
                 for j in range(k, len(matriz)):
-                    for m in range(k - 1):
+                    soma = 0
+                    for m in range(k):
+                        print(m)
                         soma += matriz_l[k][m] * matriz_u[m][j]
                     matriz_u[k][j] = matriz[k][j] - soma
+                    # ukj = akj - soamatorio[0-(k-1), m](lkm * uml) k = 1..n
 
-            for k in range(2, len(matriz)):  # lik = aik - soamatorio[0-(k-1), m](lim * umk) k = 2..n
-                soma = 0
                 for i in range(k + 1, len(matriz)):
-                    for m in range(k - 1):
-                        soma += matriz_l[i][m] * matriz_u[m][k]
-                    matriz_l[i][k] = matriz_u[k][k] ** (-1) * (matriz[i][k] - soma)
+                    somai = 0
+                    for m in range(k):
+                        somai += matriz_l[i][m] * matriz_u[m][k]
+                    matriz_l[i][k] = (matriz_u[k][k] ** (-1)) * (matriz[i][k] - somai)
+                    # lik = aik - soamatorio[0-(k-1), m](lim * umk) k = 2..n
 
-            # print(np.array(matriz_l))
-            # print(np.array(matriz_u))
+            print("Matriz L:")
+            print_matriz(matriz_l)
+            print("\nMatriz U:")
+            print_matriz(matriz_u)
+            print()
             self.matriz_l = matriz_l
             self.matriz_u = matriz_u
 
@@ -211,6 +238,10 @@ class Questao1:
                   "portanto não é possível prosseguir e encontrar as matrizes L e U")
 
     def avaliar_criterios(self):
+        self.matriz = carregar_matriz('planilha-1d.xlsx')
+        print_matriz(self.matriz)
+        print()
+
         linhas = self.criterio_linhas()
         colunas = self.criterio_colunas()
         sassenfeld = self.criterio_sassenfeld()
@@ -240,6 +271,11 @@ class Questao1:
         print("A matriz A {}, {}, {}, {}.".format(linhas, colunas, sassenfeld, normas))
 
     def jacobi(self):
+        self.matriz = carregar_matriz('planilha-1e.xlsx')
+        self.vetor_b = carregar_vetorb('planilha-1e.xlsx')
+        print_matriz(self.matriz)
+        print_vetorb(self.vetor_b)
+        print()
 
         matriz = np.array(self.matriz)
         vetor_b = np.array(self.vetor_b)
@@ -296,6 +332,11 @@ class Questao1:
                 break
 
     def gauss_seidel(self):
+        self.matriz = carregar_matriz('planilha-1f.xlsx')
+        self.vetor_b = carregar_vetorb('planilha-1f.xlsx')
+        print_matriz(self.matriz)
+        print_vetorb(self.vetor_b)
+        print()
 
         matrix = self.matriz
         vetor_b = self.vetor_b
@@ -320,7 +361,7 @@ class Questao1:
             k = k + 1
             for r in range(0, len(matrix)):
                 suma = 0
-                for c in range(0, len(matrix[r]) - 1):
+                for c in range(0, len(matrix[r])):
                     if c != r:
                         suma = suma + matrix[r][c] * x[c]
                 x[r] = (vetor_b[r] - suma) / matrix[r][r]
@@ -339,9 +380,14 @@ class Questao1:
             solucao_ant = x.copy()
 
     def sor(self):
-        pass
+        print("Não feito")
 
     def elimn_gauss(self):
+        self.matriz = carregar_matriz('planilha-1h.xlsx')
+        self.vetor_b = carregar_vetorb('planilha-1h.xlsx')
+        print_matriz(self.matriz)
+        print_vetorb(self.vetor_b)
+        print()
 
         matrix = self.matriz
         vetor_b = self.vetor_b
@@ -387,27 +433,22 @@ class Questao1:
         print(x)
 
     def decom_svd(self):
-        pass
+        print("Não feito")
 
     def qr(self):
-        pass
+        print("Não feito")
 
     def num_condicao(self):
-
-        from scipy import linalg
-
-        arquivo = 'planilha.xlsx'
-        planilha = open_workbook(arquivo).sheet_by_index(0)
-
-        m = planilha.nrows
-        n = planilha.ncols
+        self.matriz = carregar_vetores('planilha-1l.xlsx')
+        print_matriz(self.matriz)
+        print()
 
         matrix = self.matriz
 
-        A_inversa = linalg.inv(matrix)
+        A_inversa = la.inv(matrix)
         print('Matriz A inversa:')
-        for i in range(0, m):
-            for j in range(0, n - 1):
+        for i in range(0, len(matrix)):
+            for j in range(0, len(matrix[i])):
                 sys.stdout.write('%.2f\t' % A_inversa[i][j])
             print()
         print()
@@ -415,18 +456,18 @@ class Questao1:
         # Número condição de A: fazer norma infinita de linha
         # Norma infinita de linha da matriz A
         maxA = 0
-        for i in range(0, m, 1):
+        for i in range(0, len(matrix)):
             total = 0
-            for j in range(0, n - 1, 1):
+            for j in range(0, len(matrix[i])):
                 total += math.fabs(matrix[i][j])
             if maxA < total:
                 maxA = total
 
         # Norma infinita de linha da matriz A inversa
         maxAI = 0
-        for i in range(0, m, 1):
+        for i in range(0, len(matrix)):
             total = 0
-            for j in range(0, n - 1, 1):
+            for j in range(0, len(matrix[i])):
                 total += math.fabs(A_inversa[i][j])
             if maxAI < total:
                 maxAI = total
@@ -434,10 +475,71 @@ class Questao1:
         # Cálculo do número condição
         num_cond = maxA * maxAI
         print('Número condição:', num_cond)
+        print("obs.: Quanto maior o número condição, mais mal condicionada é a matriz.")
         print()
 
     def gradiente_conjugado(self):
-        pass
+        print("Não feito")
+
+    def chamar_tudo(self):
+        def sub_frente(matriz, vetor):
+            x = []
+            for i in range(len(vetor)):
+                x.append(0)
+            cont = 0  # Para atribuir o índice crescente a cada raiz x
+
+            for i in range(len(matriz)):  # Começar com os índices menores por ser Tinf
+                soma = 0
+                for j in range(-1, len(matriz[i]))[::-1]:
+                    soma += (matriz[i][j] * x[j])
+                xis = (vetor[cont] - soma) / matriz[i][i]
+                x[i] = xis
+                cont += 1
+            return x
+
+        def sub_tras(matriz, vetor):
+            x = [0] * len(matriz[0])
+            for j in range((len(matriz[0]) - 1), -1, -1):  # decrescendo um for -> range(start, stop, step)
+                x[j] = vetor[j]
+                h = len(matriz[0]) - 1
+                for i in range(j, (len(matriz[0]) - 1), +1):
+                    x[j] -= matriz[j][h] * x[h]
+                    h = h - 1
+                x[j] /= matriz[j][j]
+
+            return x
+
+        self.vetor_b = carregar_vetorb('planilha-1b.xlsx')
+        self.calcular_fator_cholesky()
+        R = self.fator_cholesky
+        Rt = np.transpose(R)
+        print_matriz(Rt)
+        print()
+
+        vet_b = self.vetor_b
+        print_vetorb(vet_b)
+        print()
+
+        y = sub_frente(Rt, vet_b)
+        print('Solução Cholesky:\ny:')
+        for i in range(len(y)):
+            print('%.2f' % y[i])
+        x = sub_tras(R, y)
+        print('\nx:')
+        for i in range(len(x)):
+            print('%.2f' % x[i])
+
+        self.lu()
+        vet_b = self.vetor_b = carregar_vetorb('planilha-1c.xlsx')
+        y = sub_frente(self.matriz_l, vet_b)
+
+        print('Solução LU:\ny:')
+        for i in range(len(y)):
+            print('%.2f' % y[i])
+        x = sub_tras(self.matriz_u, y)
+        print('\nx:')
+        for i in range(len(x)):
+            print('%.2f' % x[i])
 
     def is_diagonal(self):
         for i in range(len(self.matriz)):
@@ -502,6 +604,7 @@ class Questao1:
             return False
 
     def criterio_linhas(self):
+
         matriz = self.matriz
 
         for i in range(len(matriz)):
@@ -515,6 +618,7 @@ class Questao1:
         return True
 
     def criterio_colunas(self):
+
         matriz = self.matriz
 
         for j in range(len(matriz[0])):
@@ -528,6 +632,7 @@ class Questao1:
         return True
 
     def criterio_sassenfeld(self):
+
         matriz = self.matriz
         b = []
 
@@ -568,10 +673,7 @@ class Questao1:
 
 class Questao2:
     def __init__(self):
-        self.vetores = carregar_vetores()
-
-        print(self.vetores)
-        print()
+        self.vetores = []
 
         letra = input("a) Calcular o número de vetores recebidos e a média de cada linha.\n"
                       "b) Econtrar base ortonormal de n vetores de dimensão n.\n"
@@ -595,6 +697,10 @@ class Questao2:
             self.calcular_normas_matriz()
 
     def num_vetores_media(self):
+        self.vetores = carregar_vetores('planilha-2a.xlsx')
+        print_vetores(self.vetores)
+        print()
+
         vetores = self.vetores
         cont = 0
         medias = []
@@ -611,6 +717,10 @@ class Questao2:
             print("media do {}º vetor = {};".format(m + 1, medias[m]))
 
     def base_ortonormal(self):  # Gram-Schmidt
+        self.vetores = carregar_vetores('planilha-2a.xlsx')
+        print_vetores(self.vetores)
+        print()
+
         vetores = np.array(self.vetores)
         u_vet = [vetores[0] / la.norm(vetores[0])]
 
@@ -627,6 +737,10 @@ class Questao2:
         print()
 
     def calcular_angulo_vetores(self):
+        self.vetores = carregar_vetores('planilha-2c.xlsx')
+        print_vetores(self.vetores)
+        print()
+
         i1 = int(input("Escolha um vetor entre os 0-{} possíveis por número:".format(len(self.vetores) - 1)))
         i2 = int(input("Escolha um segundo vetor:"))
         vet1 = np.array(self.vetores[i1])
@@ -642,6 +756,9 @@ class Questao2:
         print("O ângulo entre os vetores {} e {} é de {} radianos".format(i1, i2, angulo))
 
     def calcular_normas_vetores(self):
+        self.vetores = carregar_vetores('planilha-2d.xlsx')
+        print_vetores(self.vetores)
+        print()
 
         i1 = int(input("Escolha um vetor entre os 0-{} possíveis por número:".format(len(self.vetores) - 1)))
         vet1 = np.array(self.vetores[i1])
@@ -676,6 +793,10 @@ class Questao2:
         print("Norma Infinita é:", norma_inf_i)
 
     def produto_interno_vetores(self):
+        self.vetores = carregar_vetores('planilha-2e.xlsx')
+        print_vetores(self.vetores)
+        print()
+
         i1 = int(input("Escolha um vetor entre os 0-{} possíveis por número:".format(len(self.vetores) - 1)))
         i2 = int(input("Escolha um segundo vetor:"))
         vet1 = np.array(self.vetores[i1])
@@ -690,6 +811,9 @@ class Questao2:
         print("O produto interno entre os vetores {} e {} é de {}".format(i1, i2, soma))
 
     def calcular_normas_matriz(self):
+        self.vetores = carregar_vetores('planilha-2f.xlsx')
+        print_vetores(self.vetores)
+        print()
 
         def norma_frob_a(a):
             n_fa = 0
@@ -735,8 +859,7 @@ class Questao2:
 
 class Questao3:
     def __init__(self):
-        self.matriz = carregar_vetores()
-        print_matriz(self.matriz)
+        self.matriz = []
 
         letra = input("a) Calcular autovalores.\n"
                       "b) Calcular determinante.\n"
@@ -747,6 +870,9 @@ class Questao3:
             self.calcular_det()
 
     def autovalores(self):
+        self.matriz = carregar_vetores('planilha-3a.xlsx')
+        print_matriz(self.matriz)
+        print()
 
         matrix = self.matriz
         autov = la.eigvals(matrix)
@@ -754,6 +880,9 @@ class Questao3:
         print(autov)
 
     def calcular_det(self):
+        self.matriz = carregar_vetores('planilha-3b.xlsx')
+        print_matriz(self.matriz)
+        print()
 
         matriz = self.matriz
         print_matriz(matriz)
@@ -810,10 +939,10 @@ class Questao4:
         for i in range(11)[::-1]:
             coef = float(input("Digite o coeficiente para o x^{}:".format(i)))
             coeficientes.append(coef)
-        # print("A função ficou com a seguinte cara:\n"
-        #       "{}x^10 + {}x^9 + {}x^8 + {}x^7 + {}x^6 + {}x^5 + {}x^4 + {}x^3 + {}x^2 + {}x + {}".format
-        #       (coeficientes[0], coeficientes[1], coeficientes[2], coeficientes[3], coeficientes[4],
-        #        coeficientes[5], coeficientes[6], coeficientes[7], coeficientes[8], coeficientes[9], coeficientes[10]))
+        print("A função ficou com a seguinte cara:\n"
+              "{}x^10 + {}x^9 + {}x^8 + {}x^7 + {}x^6 + {}x^5 + {}x^4 + {}x^3 + {}x^2 + {}x + {}".format
+              (coeficientes[0], coeficientes[1], coeficientes[2], coeficientes[3], coeficientes[4],
+               coeficientes[5], coeficientes[6], coeficientes[7], coeficientes[8], coeficientes[9], coeficientes[10]))
 
         x0 = float(input("Digite o valor do x incial:"))  # substituir pelo velor do x inicial
         e = float(input("Digite o valor da tolerancia:"))
@@ -827,9 +956,9 @@ class Questao4:
             p2 = x[i] - p1
 
             x.append(p2)
-            print(x[i])
+            print("x[{}] {}".format(i, x[i]))
 
-            er = self.E(x[i], x[i + 1], self.func)
+            er = self.E(x[i], x[i + 1], self.func, coeficientes)
 
             i += 1
 
@@ -895,9 +1024,9 @@ class Questao4:
             p2 = x[i] - p1
 
             x.append(p2)
-            print(x[i])
+            print("x[{}] {}".format(i, x[i]))
 
-            er = self.E(x[i], x[i + 1], self.func)
+            er = self.E(x[i], x[i + 1], self.func, coeficientes)
 
             i += 1
 
@@ -922,20 +1051,15 @@ class Questao4:
 
         return y
 
-    def E(self, x0, x1, func):
-        return [abs(func(x1)), abs(x1 - x0)]
+    def E(self, x0, x1, func, coef):
+        return [abs(func(x1, coef)), abs(x1 - x0)]
 
 
 class Questao5:
     def __init__(self):
-
+        self.matriz = []
         self.vector = []
         self.vetor_porcentagem = []
-        self.matriz = carregar_matriz()
-        self.vetor_b = carregar_vetorb()
-
-        print_matriz(self.matriz)
-        print_vetorb(self.vetor_b)
 
         letra = input("a) Construir uma função que substitua cada elemento da matriz pelo seu primeiro dígito.\n"
                       "b) Construir uma função que substitua cada elemento da matriz pelo seu segundo dígito\n"
@@ -952,6 +1076,10 @@ class Questao5:
             self.plotar_result()
 
     def sub_prim_elemento(self):
+        self.matriz = carregar_vetores('planilha-5ab.xlsx')
+        print_matriz(self.matriz)
+        print()
+
         matrix = self.matriz
 
         matrix_fim = []
@@ -965,6 +1093,10 @@ class Questao5:
         print_matriz(matrix_fim)
 
     def sub_seg_elemento(self):
+        self.matriz = carregar_vetores('planilha-5ab.xlsx')
+        print_matriz(self.matriz)
+        print()
+
         matrix = self.matriz
         matrix_fim = []
 
@@ -980,6 +1112,9 @@ class Questao5:
         print_matriz(matrix_fim)
 
     def calcular_estat(self):
+        self.matriz = carregar_vetores('planilha-5cd.xlsx')
+        print_matriz(self.matriz)
+        print()
 
         matrix = self.matriz
         vector = self.vector
@@ -1019,7 +1154,7 @@ class Questao5:
             porcentagem = (vector[elemento] / total) * 100
             # print('A porcentagem de números ', elemento, ' é de : ', porcentagem,'%')
             vetor_porcentagem[elemento] = porcentagem
-            print('A porcentagem de números ', elemento, 'é de porcentagem  {:.2f}''%'.format(porcentagem))
+            print('A porcentagem de números ', elemento + 1, 'é de porcentagem  {:.2f}''%'.format(porcentagem))
 
         self.vector = vector
         self.vetor_porcentagem = vetor_porcentagem
